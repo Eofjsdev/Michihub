@@ -921,9 +921,17 @@ configurarPWA();
             .from("mensajes")
             .insert([{ usuario: NOMBRE_SISTEMA, texto, correo: ADMIN_EMAIL }]);
         if(error){
-            console.error("No se pudo publicar el mensaje de sistema:", error);
-            alert("El comando se ejecutó pero no se pudo publicar la confirmación en el chat: " + error.message);
+            console.error("No se pudo publicar el mensaje de sistema: " + describirError(error));
+            alert("El comando se ejecutó pero no se pudo publicar la confirmación en el chat: " + describirError(error));
         }
+    }
+
+    // Convierte un error de Supabase en texto legible, porque en algunos entornos
+    // (como consolas de WebView) un objeto se imprime como "[object Object]".
+    function describirError(error){
+        if(!error) return "(sin detalles)";
+        const partes = [error.message, error.code ? `código: ${error.code}` : "", error.details, error.hint].filter(Boolean);
+        return partes.length ? partes.join(" | ") : JSON.stringify(error);
     }
 
     // Ejecuta una escritura en Supabase (insert/update/upsert/delete) y avisa
@@ -932,8 +940,8 @@ configurarPWA();
     async function ejecutarEscritura(promesa, mensajeError){
         const { error } = await promesa;
         if(error){
-            console.error(mensajeError, error);
-            alert(mensajeError + ": " + error.message);
+            console.error(mensajeError + ": " + describirError(error));
+            alert(mensajeError + ": " + describirError(error));
             return false;
         }
         return true;
@@ -1070,8 +1078,8 @@ configurarPWA();
                 .from("mensajes")
                 .insert([{ usuario: "📢 ANUNCIO", texto, correo: ADMIN_EMAIL }]);
             if(errorAnuncio){
-                console.error("Error en /anuncio:", errorAnuncio);
-                alert("No se pudo publicar el anuncio: " + errorAnuncio.message);
+                console.error("Error en /anuncio: " + describirError(errorAnuncio));
+                alert("No se pudo publicar el anuncio: " + describirError(errorAnuncio));
             }
             return true;
         }
@@ -1631,7 +1639,8 @@ configurarPWA();
             .limit(100);
 
         if(error){
-            console.error("Error cargando mensajes del chat:", error);
+            console.error("Error cargando mensajes del chat: " + describirError(error));
+            alert("No se pudieron cargar los mensajes del chat: " + describirError(error));
             return;
         }
         data.forEach(mostrarMensajeChat);
@@ -1683,6 +1692,12 @@ configurarPWA();
         }
 
         // Comandos de administrador (solo el CEO puede usarlos)
+        const COMANDOS_ADMIN = ["/eliminar","/advertencia","/desilenciar","/limpiar","/eliminarultimos","/anuncio","/silenciar","/banear","/desbanear","/suspendercuenta","/bloquearcuenta","/reactivarcuenta","/cerrarchat","/abrirchat","/cerrarprivado","/abrirprivado"];
+        if(COMANDOS_ADMIN.includes(partesTexto[0].toLowerCase()) && !esAdmin()){
+            alert(`Este comando solo funciona con la cuenta admin (${ADMIN_EMAIL}). Tu sesión actual está como: ${obtenerCorreoUsuario() || "(sin correo detectado)"}`);
+            inputTexto.value = "";
+            return;
+        }
         if(esAdmin() && texto.startsWith("/") && texto.toLowerCase() !== "/soporte"){
             const eraComando = await ejecutarComandoAdmin(texto);
             if(eraComando){
@@ -1742,7 +1757,8 @@ configurarPWA();
             }]);
 
         if(error){
-            console.error("Error enviando mensaje del chat:", error);
+            console.error("Error enviando mensaje del chat: " + describirError(error));
+            alert("No se pudo enviar el mensaje: " + describirError(error));
             return;
         }
         inputTexto.value = "";
