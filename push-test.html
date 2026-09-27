@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MichiHub | Prueba de notificaciones push</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body{font-family:sans-serif;max-width:480px;margin:40px auto;padding:0 16px;text-align:center}
+button{font-size:1.1em;padding:12px 20px;border-radius:10px;border:none;background:#7b5fa3;color:#fff;margin:10px}
+#estado{margin-top:20px;white-space:pre-wrap;font-size:.9em;color:#444}
+</style>
+</head>
+<body>
+<h1>🐱 Prueba de notificaciones</h1>
+<p>Esta página es solo para probar el sistema de push, aislada del resto de MichiHub.</p>
+<button id="btn-activar">1. Activar notificaciones en este dispositivo</button>
+<br>
+<button id="btn-probar">2. Mandar notificación de prueba</button>
+<div id="estado"></div>
+
+<script>
+const SUPABASE_URL = "https://xeongtzcemodcpfdzqws.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhlb25ndHpjZW1vZGNwZmR6cXdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3ODQ4NzksImV4cCI6MjEwNTM2MDg3OX0.CiB3HW5KzRYPvpYS1SwfncSny_sXOvY48nustEsmnLQ";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const VAPID_PUBLIC_KEY = "BOTgSQFoQzTd97Phq_GfkgmrNuwPKIwQCokduJG7YEm5PHIRLyeAV2RCfrIA02xVkbXiCVzCNVQCuI_otcadvuE";
+
+const estado = document.getElementById("estado");
+function log(txt){ estado.textContent += txt + "\n"; console.log(txt); }
+
+function base64UrlAUint8Array(base64Url){
+    const relleno = "=".repeat((4 - (base64Url.length % 4)) % 4);
+    const base64 = (base64Url + relleno).replace(/-/g, "+").replace(/_/g, "/");
+    const binario = atob(base64);
+    const salida = new Uint8Array(binario.length);
+    for(let i = 0; i < binario.length; i++) salida[i] = binario.charCodeAt(i);
+    return salida;
+}
+
+// Service worker mínimo, propio de esta página de prueba (no toca el de MichiHub)
+const swCodigo = `
+self.addEventListener("push", (event) => {
+  const datos = event.data ? event.data.json() : { title: "MichiHub", body: "Prueba" };
+  event.waitUntil(self.registration.showNotification(datos.title, {
+    body: datos.body,
+    icon: "icon-192.png"
+  }));
+});
+`;
+
+document.getElementById("btn-activar").addEventListener("click", async () => {
+    try{
+        log("Registrando service worker de prueba...");
+        const swBlob = new Blob([swCodigo], { type: "application/javascript" });
+        const swUrl = URL.createObjectURL(swBlob);
+        const registro = await navigator.serviceWorker.register(swUrl);
+        await navigator.serviceWorker.ready;
+
+        log("Pidiendo permiso de notificaciones...");
+        const permiso = await Notification.requestPermission();
+        if(permiso !== "granted"){ log("Permiso denegado."); return; }
+
+        let suscripcion = await registro.pushManager.getSubscription();
+        if(!suscripcion){
+            suscripcion = await registro.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: base64UrlAUint8Array(VAPID_PUBLIC_KEY)
+            });
+        }
+
+        const datos = suscripcion.toJSON();
+        const { error } = await supabase.from("push_prueba_suscripciones").upsert({
+            endpoint: datos.endpoint,
+            p256dh: datos.keys.p256dh,
+            auth: datos.keys.auth
+        }, { onConflict: "endpoint" });
+
+        if(error){ log("Error guardando suscripción: " + JSON.stringify(error)); return; }
+        log("¡Listo! Este dispositivo ya puede recibir notificaciones de prueba.");
+    }catch(err){
+        log("Error: " + err);
+    }
+});
+
+document.getElementById("btn-probar").addEventListener("click", async () => {
+    try{
+        log("Mandando evento de prueba...");
+        const { error } = await supabase.from("push_prueba_eventos").insert({ mensaje: "¡Funciona! " + new Date().toLocaleTimeString() });
+        if(error){ log("Error insertando evento: " + JSON.stringify(error)); return; }
+        log("Evento insertado. Espera unos segundos a que llegue la notificación...");
+    }catch(err){
+        log("Error: " + err);
+    }
+});
+</script>
+</body>
+</html>
