@@ -92,6 +92,14 @@ header{
     flex-shrink:0;
 }
 
+#radio-notif-btn{
+    padding:5px 9px;
+    font-size:0.9rem;
+}
+#radio-notif-btn.activo{
+    background:#5a8c5a;
+}
+
 .radio-cover{
     width:36px;
     height:36px;
@@ -575,6 +583,7 @@ nav.menu-principal a.activo{
 <span id="radio-duracion"></span>
 </div>
 <button id="radio-btn" onclick="toggleMusic()">▶</button>
+<button id="radio-notif-btn" type="button" title="Avisarme cuando cambie la canción" onclick="alternarNotifRadio()">🔕</button>
 </div>
 
 <button id="btn-instalar" style="display:none;border:none;background:var(--accent);color:white;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;">
@@ -910,6 +919,50 @@ const radioBtn = document.getElementById("radio-btn");
 const radioArtista = document.getElementById("radio-artista");
 const radioDuracion = document.getElementById("radio-duracion");
 const radioCover = document.getElementById("radio-cover");
+const radioNotifBtn = document.getElementById("radio-notif-btn");
+
+/* Notificación emergente (no la del reproductor) con artista + canción en vivo */
+function actualizarBotonNotifRadio(activo){
+    radioNotifBtn.classList.toggle("activo", activo);
+    radioNotifBtn.textContent = activo ? "🔔" : "🔕";
+}
+
+function alternarNotifRadio(){
+    const activoAhora = radioNotifBtn.classList.contains("activo");
+    if(activoAhora){
+        localStorage.setItem("michihubNotifRadio", "false");
+        actualizarBotonNotifRadio(false);
+        return;
+    }
+    if(!("Notification" in window)){
+        alert("Este navegador no soporta notificaciones.");
+        return;
+    }
+    Notification.requestPermission().then((permiso) => {
+        const concedido = permiso === "granted";
+        localStorage.setItem("michihubNotifRadio", concedido ? "true" : "false");
+        actualizarBotonNotifRadio(concedido);
+        if(!concedido) alert("Necesitas permitir las notificaciones para activar el aviso.");
+    });
+}
+
+if(localStorage.getItem("michihubNotifRadio") === "true" && "Notification" in window && Notification.permission === "granted"){
+    actualizarBotonNotifRadio(true);
+}
+
+function notificarCancionRadio(artista, titulo, portadaUrl){
+    if(radioNotifBtn.classList.contains("activo") && "Notification" in window && Notification.permission === "granted"){
+        try{
+            new Notification(artista || "MichiHub Radio", {
+                body: titulo || "",
+                icon: portadaUrl || "icon-192.png",
+                tag: "michihub-radio"
+            });
+        }catch(e){
+            // algunos navegadores móviles no soportan Notification directa
+        }
+    }
+}
 
 let cancionActual = "";
 
@@ -998,6 +1051,7 @@ function iniciarMetadataRadio(){
             radioDuracion.innerText = "";
             radioCover.src = "icon-192.png";
             actualizarMediaSession(titulo, artista, "icon-192.png");
+            notificarCancionRadio(artista, titulo, "icon-192.png");
             buscarPortadaDeezer(artista, titulo);
         };
         fuenteMetadata.onerror = () => {

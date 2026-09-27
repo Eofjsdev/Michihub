@@ -249,8 +249,6 @@ main{
 <h1>MichiHub</h1>
 <p>Comunidad</p>
 </div>
-
-<span id="link-cerrar-sesion" class="link-recuperar" style="display:none;">Cerrar sesión</span>
 </header>
 
 <nav class="menu-principal">
@@ -328,7 +326,6 @@ function manejarLoginGoogle(response){
     localStorage.setItem("michihubFoto", datosUsuario.picture || "");
 
     document.getElementById("login-gate").classList.remove("activo");
-    document.getElementById("link-cerrar-sesion").style.display = "inline-block";
     iniciarComunidad();
 }
 
@@ -337,17 +334,12 @@ function cerrarSesion(){
     localStorage.removeItem("michihubNombre");
     location.reload();
 }
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("link-cerrar-sesion").addEventListener("click", cerrarSesion);
-});
 
 /* Verifica la sesión al entrar; si no hay login (con Google o GitHub, hecho antes en index.html), bloquea el acceso */
 (function verificarSesionObligatoria(){
     let logueado = localStorage.getItem("michihubLogueado") === "true";
     if(!logueado){
         document.getElementById("login-gate").classList.add("activo");
-    }else{
-        document.getElementById("link-cerrar-sesion").style.display = "inline-block";
     }
 })();
 
