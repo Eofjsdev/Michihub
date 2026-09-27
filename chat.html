@@ -917,7 +917,26 @@ configurarPWA();
     }
 
     async function publicarMensajeSistema(texto){
-        await supabaseChat.from("mensajes").insert([{ usuario: NOMBRE_SISTEMA, texto }]);
+        const { error } = await supabaseChat
+            .from("mensajes")
+            .insert([{ usuario: NOMBRE_SISTEMA, texto, correo: ADMIN_EMAIL }]);
+        if(error){
+            console.error("No se pudo publicar el mensaje de sistema:", error);
+            alert("El comando se ejecutó pero no se pudo publicar la confirmación en el chat: " + error.message);
+        }
+    }
+
+    // Ejecuta una escritura en Supabase (insert/update/upsert/delete) y avisa
+    // con un alert + consola si falla, en vez de fallar en silencio como antes
+    // (que era la razón por la que los comandos parecían "no hacer nada").
+    async function ejecutarEscritura(promesa, mensajeError){
+        const { error } = await promesa;
+        if(error){
+            console.error(mensajeError, error);
+            alert(mensajeError + ": " + error.message);
+            return false;
+        }
+        return true;
     }
 
     // Revisa si el usuario actual está silenciado o baneado
@@ -992,7 +1011,7 @@ configurarPWA();
                 .limit(1);
 
             if(data && data.length){
-                await supabaseChat.from("mensajes").delete().eq("id", data[0].id);
+                if(!(await ejecutarEscritura(supabaseChat.from("mensajes").delete().eq("id", data[0].id), "No se pudo eliminar el mensaje"))) return true;
                 await publicarMensajeSistema(`🗑️ Se eliminó el último mensaje de ${usuarioObjetivo}.`);
             }else{
                 await publicarMensajeSistema(`No se encontró un mensaje reciente de ${usuarioObjetivo}.`);
@@ -1011,13 +1030,13 @@ configurarPWA();
         if(comando === "/desilenciar"){
             const usuarioObjetivo = partes.slice(1).join(" ");
             if(!usuarioObjetivo){ await publicarMensajeSistema("Uso: /desilenciar NombreUsuario"); return true; }
-            await supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "activo", hasta: null });
+            if(!(await ejecutarEscritura(supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "activo", hasta: null }, { onConflict: "usuario" }), "No se pudo desilenciar al usuario"))) return true;
             await publicarMensajeSistema(`🔊 ${usuarioObjetivo} ya puede volver a escribir.`);
             return true;
         }
 
         if(comando === "/limpiar"){
-            await supabaseChat.from("mensajes").delete().neq("id", 0);
+            if(!(await ejecutarEscritura(supabaseChat.from("mensajes").delete().not("id", "is", null), "No se pudo limpiar el chat"))) return true;
             await publicarMensajeSistema("🧹 El chat fue limpiado por el administrador.");
             return true;
         }
@@ -1036,7 +1055,7 @@ configurarPWA();
 
             if(data && data.length){
                 const ids = data.map(m => m.id);
-                await supabaseChat.from("mensajes").delete().in("id", ids);
+                if(!(await ejecutarEscritura(supabaseChat.from("mensajes").delete().in("id", ids), "No se pudieron eliminar los mensajes"))) return true;
                 await publicarMensajeSistema(`🗑️ Se eliminaron ${data.length} mensaje(s) de ${usuarioObjetivo}.`);
             }else{
                 await publicarMensajeSistema(`No se encontraron mensajes de ${usuarioObjetivo}.`);
@@ -1047,7 +1066,13 @@ configurarPWA();
         if(comando === "/anuncio"){
             const texto = partes.slice(1).join(" ");
             if(!texto){ await publicarMensajeSistema("Uso: /anuncio Tu mensaje aquí"); return true; }
-            await supabaseChat.from("mensajes").insert([{ usuario: "📢 ANUNCIO", texto }]);
+            const { error: errorAnuncio } = await supabaseChat
+                .from("mensajes")
+                .insert([{ usuario: "📢 ANUNCIO", texto, correo: ADMIN_EMAIL }]);
+            if(errorAnuncio){
+                console.error("Error en /anuncio:", errorAnuncio);
+                alert("No se pudo publicar el anuncio: " + errorAnuncio.message);
+            }
             return true;
         }
 
@@ -1056,7 +1081,7 @@ configurarPWA();
             const minutos = parseInt(partes[2]) || 10;
             if(!usuarioObjetivo){ await publicarMensajeSistema("Uso: /silenciar NombreUsuario minutos"); return true; }
             const hasta = new Date(Date.now() + minutos * 60000).toISOString();
-            await supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "silenciado", hasta });
+            if(!(await ejecutarEscritura(supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "silenciado", hasta }, { onConflict: "usuario" }), "No se pudo silenciar al usuario"))) return true;
             await publicarMensajeSistema(`🔇 ${usuarioObjetivo} fue silenciado por ${minutos} minutos.`);
             return true;
         }
@@ -1064,7 +1089,7 @@ configurarPWA();
         if(comando === "/banear"){
             const usuarioObjetivo = partes.slice(1).join(" ");
             if(!usuarioObjetivo){ await publicarMensajeSistema("Uso: /banear NombreUsuario"); return true; }
-            await supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "baneado", hasta: null });
+            if(!(await ejecutarEscritura(supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "baneado", hasta: null }, { onConflict: "usuario" }), "No se pudo banear al usuario"))) return true;
             await publicarMensajeSistema(`🚫 ${usuarioObjetivo} fue baneado del chat.`);
             return true;
         }
@@ -1072,7 +1097,7 @@ configurarPWA();
         if(comando === "/desbanear"){
             const usuarioObjetivo = partes.slice(1).join(" ");
             if(!usuarioObjetivo){ await publicarMensajeSistema("Uso: /desbanear NombreUsuario"); return true; }
-            await supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "activo", hasta: null });
+            if(!(await ejecutarEscritura(supabaseChat.from("moderacion").upsert({ usuario: usuarioObjetivo, estado: "activo", hasta: null }, { onConflict: "usuario" }), "No se pudo desbanear al usuario"))) return true;
             await publicarMensajeSistema(`✅ ${usuarioObjetivo} fue desbaneado.`);
             return true;
         }
@@ -1083,7 +1108,7 @@ configurarPWA();
             const correoObjetivo = await resolverCorreoPorNombre(usuarioObjetivo);
             if(!correoObjetivo){ await publicarMensajeSistema(`No se encontró la cuenta de Google de ${usuarioObjetivo} (debe tener al menos un mensaje enviado en el chat).`); return true; }
             const hasta = new Date(Date.now() + 5 * 24 * 60 * 60000).toISOString();
-            await supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "suspendida", hasta });
+            if(!(await ejecutarEscritura(supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "suspendida", hasta }, { onConflict: "correo" }), "No se pudo suspender la cuenta"))) return true;
             await publicarMensajeSistema(`⏸️ La cuenta de ${usuarioObjetivo} fue suspendida por 5 días.`);
             return true;
         }
@@ -1094,7 +1119,7 @@ configurarPWA();
             const correoObjetivo = await resolverCorreoPorNombre(usuarioObjetivo);
             if(!correoObjetivo){ await publicarMensajeSistema(`No se encontró la cuenta de Google de ${usuarioObjetivo} (debe tener al menos un mensaje enviado en el chat).`); return true; }
             const hasta = new Date(Date.now() + 24 * 60 * 60000).toISOString();
-            await supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "bloqueada", hasta });
+            if(!(await ejecutarEscritura(supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "bloqueada", hasta }, { onConflict: "correo" }), "No se pudo bloquear la cuenta"))) return true;
             await publicarMensajeSistema(`⛔ La cuenta de ${usuarioObjetivo} fue bloqueada por 24 horas.`);
             return true;
         }
@@ -1104,31 +1129,31 @@ configurarPWA();
             if(!usuarioObjetivo){ await publicarMensajeSistema("Uso: /reactivarcuenta NombreUsuario"); return true; }
             const correoObjetivo = await resolverCorreoPorNombre(usuarioObjetivo);
             if(!correoObjetivo){ await publicarMensajeSistema(`No se encontró la cuenta de Google de ${usuarioObjetivo}.`); return true; }
-            await supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "activa", hasta: null });
+            if(!(await ejecutarEscritura(supabaseChat.from("cuentas").upsert({ correo: correoObjetivo, usuario: usuarioObjetivo, estado: "activa", hasta: null }, { onConflict: "correo" }), "No se pudo reactivar la cuenta"))) return true;
             await publicarMensajeSistema(`✅ La cuenta de ${usuarioObjetivo} fue reactivada.`);
             return true;
         }
 
         if(comando === "/cerrarchat"){
-            await supabaseChat.from("configuracion_chat").update({ cerrado: true }).eq("id", 1);
+            if(!(await ejecutarEscritura(supabaseChat.from("configuracion_chat").update({ cerrado: true }).eq("id", 1), "No se pudo cerrar el chat"))) return true;
             await publicarMensajeSistema("🔒 El chat fue cerrado por el administrador.");
             return true;
         }
 
         if(comando === "/abrirchat"){
-            await supabaseChat.from("configuracion_chat").update({ cerrado: false }).eq("id", 1);
+            if(!(await ejecutarEscritura(supabaseChat.from("configuracion_chat").update({ cerrado: false }).eq("id", 1), "No se pudo abrir el chat"))) return true;
             await publicarMensajeSistema("🔓 El chat fue reabierto por el administrador.");
             return true;
         }
 
         if(comando === "/cerrarprivado"){
-            await supabaseChat.from("configuracion_secciones").update({ cerrado: true }).eq("seccion", "privado");
+            if(!(await ejecutarEscritura(supabaseChat.from("configuracion_secciones").update({ cerrado: true }).eq("seccion", "privado"), "No se pudo cerrar la sección Privado"))) return true;
             await publicarMensajeSistema("🔒 La sección Privado fue cerrada por el administrador.");
             return true;
         }
 
         if(comando === "/abrirprivado"){
-            await supabaseChat.from("configuracion_secciones").update({ cerrado: false }).eq("seccion", "privado");
+            if(!(await ejecutarEscritura(supabaseChat.from("configuracion_secciones").update({ cerrado: false }).eq("seccion", "privado"), "No se pudo abrir la sección Privado"))) return true;
             await publicarMensajeSistema("🔓 La sección Privado fue reabierta por el administrador.");
             return true;
         }
