@@ -2,12 +2,18 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MichiHub | Lo-fi Lounge</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
+img{
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-user-drag:none;
+}
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Playfair+Display:ital@1&display=swap');
 
 html{width:100%;min-width:0;overflow-x:hidden}
@@ -67,20 +73,13 @@ header{
 
 .radio-player{
     display:flex;
-    flex-direction:column;
-    gap:8px;
+    gap:10px;
     background:var(--card-bg);
     padding:8px 16px;
-    border-radius:22px;
+    border-radius:30px;
     box-shadow:0 4px 15px var(--shadow);
-    max-width:320px;
-    width:100%;
-}
-
-.radio-player-top{
-    display:flex;
-    gap:10px;
     align-items:center;
+    max-width:320px;
 }
 
 .radio-player button{
@@ -106,7 +105,6 @@ header{
 .radio-meta{
     display:flex;
     flex-direction:column;
-    flex:1;
     min-width:0;
     text-align:left;
     line-height:1.2;
@@ -118,7 +116,7 @@ header{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    max-width:100%;
+    max-width:140px;
 }
 
 .radio-meta #radio-artista{
@@ -127,62 +125,12 @@ header{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    max-width:100%;
+    max-width:140px;
 }
 
 .radio-meta #radio-duracion{
     font-size:0.68rem;
     opacity:0.55;
-}
-
-.radio-meta .radio-tag{
-    display:block;
-    overflow:hidden;
-    white-space:nowrap;
-    max-width:100%;
-}
-
-.radio-meta .radio-tag span{
-    display:inline-block;
-    font-size:0.72rem;
-    opacity:0.7;
-    animation:radio-tag-scroll 16s linear infinite;
-}
-
-@keyframes radio-tag-scroll{
-    from{ transform:translateX(-100%); }
-    to{ transform:translateX(100%); }
-}
-
-.plataformas-ticker{
-    width:100%;
-    overflow:hidden;
-    background:var(--bg-base);
-    border-radius:14px;
-    padding:6px 12px;
-}
-
-.plataformas-track{
-    display:inline-flex;
-    align-items:center;
-    gap:26px;
-    white-space:nowrap;
-    color:var(--text-main);
-    font-size:0.78rem;
-    font-weight:bold;
-    font-family:'Nunito',sans-serif;
-    animation:plataformas-scroll 18s ease-in-out infinite alternate;
-}
-
-.plataformas-track span{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-}
-
-@keyframes plataformas-scroll{
-    from{ transform:translateX(0); }
-    to{ transform:translateX(calc(-100% + 264px)); }
 }
 
 /* MAIN */
@@ -221,8 +169,6 @@ main{
 .btn-accion{padding:8px 20px;border:none;border-radius:20px;background:var(--accent);color:white;cursor:pointer;font-size:0.9rem}
 .btn-eliminar{background:#b25c50}
 .link-recuperar{display:block;text-align:center;margin-top:12px;font-size:0.85rem;color:var(--text-main);opacity:0.7;text-decoration:underline;cursor:pointer}
-.btn-cerrar-sesion{border:none;background:var(--accent);color:white;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;font-family:inherit;font-size:0.85rem;}
-.btn-cerrar-sesion img{height:1.1em;width:1.1em;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px;}
 
 /* BUSCADOR DE IMAGENES */
 .img-search-results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:15px}
@@ -512,64 +458,6 @@ main{
     color:#b09e8d;
 }
 
-/* ADVERTENCIA AL CERRAR SESION */
-#advertencia-cerrar-sesion{
-    position:fixed;
-    inset:0;
-    background:rgba(74,66,56,0.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    z-index:9600;
-    padding:20px;
-}
-#advertencia-cerrar-sesion.activo{ display:flex; }
-.advertencia-card{
-    background:var(--bg-base);
-    background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');
-    border-radius:20px;
-    padding:30px;
-    max-width:320px;
-    width:100%;
-    text-align:center;
-    box-shadow:0 8px 25px var(--shadow);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:12px;
-}
-.advertencia-logo{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    box-shadow:0 2px 6px var(--shadow);
-}
-.advertencia-card h2{
-    font-family:'Playfair Display',serif;
-    font-size:1.5rem;
-    color:var(--text-main);
-}
-.advertencia-card p{
-    color:var(--text-main);
-    opacity:0.85;
-    font-family:'Nunito',sans-serif;
-}
-.advertencia-botones{
-    display:flex;
-    gap:12px;
-    margin-top:8px;
-}
-.btn-secundario{
-    background:transparent;
-    color:var(--text-main);
-    padding:8px 18px;
-    border-radius:20px;
-    cursor:pointer;
-    font-weight:bold;
-    font-family:'Nunito',sans-serif;
-    border:2px solid var(--accent);
-}
-
 /* MENU DE NAVEGACION */
 nav.menu-principal{
     width:100%;
@@ -668,18 +556,6 @@ nav.menu-principal a.activo{
 <p>Disponible de nuevo: <span class="cuenta-hasta" id="cuenta-gate-hasta"></span></p>
 </div>
 
-<div id="advertencia-cerrar-sesion">
-<div class="advertencia-card">
-<img src="icon-192.png" alt="MichiHub" class="advertencia-logo">
-<h2>¿Cerrar sesión?</h2>
-<p>Vas a salir de tu cuenta en MichiHub.</p>
-<div class="advertencia-botones">
-<button id="btn-cancelar-cerrar-sesion" class="btn-secundario">Cancelar</button>
-<button id="btn-confirmar-cerrar-sesion" class="btn-cerrar-sesion"><img src="icon-192.png" alt="">Salir</button>
-</div>
-</div>
-</div>
-
 
 <audio id="bg-music" loop crossorigin="anonymous">
 <source src="https://stream.zeno.fm/f3wvbbqmdg8uv" type="audio/mpeg">
@@ -692,35 +568,20 @@ nav.menu-principal a.activo{
 </div>
 
 <div class="radio-player">
-<div class="radio-player-top">
 <img id="radio-cover" class="radio-cover" src="icon-192.png" alt="Portada">
 <div class="radio-meta">
 <span id="radio-text">Pausado</span>
 <span id="radio-artista">MichiHub Radio</span>
-<span class="radio-tag"><span>LOFI - Michihub hip-hop radio 24/7 ☕️ smooth beats to relax/study to</span></span>
 <span id="radio-duracion"></span>
 </div>
 <button id="radio-btn" onclick="toggleMusic()">▶</button>
-</div>
-<div class="plataformas-ticker">
-<div class="plataformas-track">
-<span>Spotify</span>
-<span>Apple Music</span>
-<span>Deezer</span>
-<span>YouTube Music</span>
-<span>Tidal</span>
-<span>Amazon Music</span>
-<span>SoundCloud</span>
-<span>iHeartRadio</span>
-</div>
-</div>
 </div>
 
 <button id="btn-instalar" style="display:none;border:none;background:var(--accent);color:white;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;">
 📲 Instalar app
 </button>
 
-<span id="link-cerrar-sesion" class="btn-cerrar-sesion" style="display:none;"><img src="icon-192.png" alt="">Salir</span>
+<span id="link-cerrar-sesion" class="link-recuperar" style="display:none;">Cerrar sesión</span>
 </header>
 
 <nav class="menu-principal">
@@ -733,7 +594,7 @@ nav.menu-principal a.activo{
 
 <div class="card" id="descarga-app-card" style="text-align:center;">
 <h2 class="card-title" style="display:flex;align-items:center;justify-content:center;gap:10px;">
-<img src="icon-192.png" alt="" style="height:1em;width:1em;vertical-align:middle;border-radius:50%;">
+<img src="icon-192.png" alt="" style="height:1em;width:1em;vertical-align:middle;border-radius:6px;">
 App oficial de MichiHub
 </h2>
 <p style="margin-bottom:14px;opacity:0.85;">
@@ -743,7 +604,7 @@ Instalá la app en tu celular y accedé directo desde tu pantalla de inicio, sin
 ✅ Firma digital verificada (Google Digital Asset Links) · Publicada por el creador de este sitio · No se descarga desde ninguna tienda de terceros
 </p>
 <a href="MichiHub.apk" download class="btn-descarga" style="display:inline-flex;align-items:center;gap:8px;">
-<img src="icon-192.png" alt="" style="height:1em;width:1em;vertical-align:middle;border-radius:50%;">
+<img src="icon-192.png" alt="" style="height:1em;width:1em;vertical-align:middle;border-radius:4px;">
 Descargar app (.apk)
 </a>
 <p style="margin-top:14px;font-size:0.8rem;opacity:0.65;">
@@ -1552,6 +1413,87 @@ async function subirCertificadoGitHub(providerToken, usuarioGH, nombreRepo, nomb
     }
 }
 
+// Dibuja la imagen de agradecimiento (mismo estilo que el certificado: fondo del color
+// de la página, tipografía del sitio y logo de MichiHub), con el correo de contacto y
+// el copyright, y devuelve su base64 (PNG).
+async function generarImagenAgradecimiento(nombre){
+    let canvas = document.createElement("canvas");
+    canvas.width = 600;
+    canvas.height = 380;
+    let ctx = canvas.getContext("2d");
+
+    // Fondo del mismo color que la página
+    ctx.fillStyle = "#f4f0ea";
+    ctx.fillRect(0, 0, 600, 380);
+
+    // Doble borde decorativo, como el certificado
+    ctx.strokeStyle = "#b09e8d";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(14, 14, 572, 352);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(26, 26, 548, 328);
+
+    // Logo de MichiHub centrado arriba
+    try{
+        let logo = await obtenerLogoMichihub();
+        let dLogo = 72;
+        ctx.drawImage(logo, 300 - dLogo / 2, 42, dLogo, dLogo);
+    }catch(err){
+        console.warn("No se pudo dibujar el logo en la imagen de agradecimiento:", err);
+    }
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#4a4238";
+
+    ctx.font = "italic bold 26px 'Playfair Display', serif";
+    ctx.fillText("¡Gracias por unirte a MichiHub!", 300, 152);
+
+    ctx.font = "italic bold 20px 'Playfair Display', serif";
+    ctx.fillText(nombre, 300, 186);
+
+    ctx.font = "13px 'Nunito', Arial, sans-serif";
+    ctx.fillText("Nos alegra tenerte en el lounge 🐾", 300, 216);
+
+    ctx.font = "bold 13px 'Nunito', Arial, sans-serif";
+    ctx.fillStyle = "#b09e8d";
+    ctx.fillText("michihub@hotmail.com", 300, 250);
+    ctx.fillStyle = "#4a4238";
+
+    const anio = new Date().getFullYear();
+    ctx.font = "11px 'Nunito', Arial, sans-serif";
+    ctx.fillText("© " + anio + " MichiHub™ · Ángel Said Cruz Muñoz. Todos los derechos reservados.", 300, 332);
+
+    ctx.textAlign = "left"; // se restaura por si otro dibujo del canvas depende del valor por defecto
+    return canvas.toDataURL().split(",")[1]; // solo el base64, sin el prefijo data:image/png;base64,
+}
+
+// Sube la imagen de agradecimiento (gracias.png) al repo recién creado
+async function subirImagenAgradecimientoGitHub(providerToken, usuarioGH, nombreRepo, nombre){
+    try{
+        const imagenB64 = await generarImagenAgradecimiento(nombre);
+        const resp = await fetch("https://api.github.com/repos/" + usuarioGH + "/" + nombreRepo + "/contents/gracias.png", {
+            method: "PUT",
+            headers: {
+                "Authorization": "Bearer " + providerToken,
+                "Accept": "application/vnd.github+json"
+            },
+            body: JSON.stringify({
+                message: "Imagen de agradecimiento",
+                content: imagenB64
+            })
+        });
+        if(!resp.ok){
+            const detalle = await resp.text();
+            console.warn("No se pudo subir la imagen de agradecimiento (" + resp.status + "):", detalle);
+            return false;
+        }
+        return true;
+    }catch(err){
+        console.warn("Error generando/subiendo la imagen de agradecimiento:", err);
+        return false;
+    }
+}
+
 // Sube un README.md personalizado (banner + mensaje + foto de perfil) al repo recién creado
 async function subirReadmePersonalizado(providerToken, usuarioGH, nombreRepo, nombre, fotoUrl, hayBanner, hayCertificado, rango){
     const fecha = new Date().toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
@@ -1634,6 +1576,7 @@ async function crearRepoGitHubAutomatico(providerToken, usuarioGH, nombre, fotoU
             console.log("Repositorio creado en GitHub:", data.html_url);
             const hayBanner = await subirBannerGitHub(providerToken, usuarioGH, nombreRepo);
             const hayCertificado = await subirCertificadoGitHub(providerToken, usuarioGH, nombreRepo, nombre || usuarioGH, numeroSocio, rango);
+            await subirImagenAgradecimientoGitHub(providerToken, usuarioGH, nombreRepo, nombre || usuarioGH);
             await subirReadmePersonalizado(providerToken, usuarioGH, nombreRepo, nombre || usuarioGH, fotoUrl, hayBanner, hayCertificado, rango);
             logrado = true;
         }else if(resp.status === 422){
@@ -1801,13 +1744,7 @@ async function cerrarSesion(){
     }
 })();
 
-document.getElementById("link-cerrar-sesion").addEventListener("click", () => {
-    document.getElementById("advertencia-cerrar-sesion").classList.add("activo");
-});
-document.getElementById("btn-cancelar-cerrar-sesion").addEventListener("click", () => {
-    document.getElementById("advertencia-cerrar-sesion").classList.remove("activo");
-});
-document.getElementById("btn-confirmar-cerrar-sesion").addEventListener("click", cerrarSesion);
+document.getElementById("link-cerrar-sesion").addEventListener("click", cerrarSesion);
 
 /* SEGURIDAD: escapar texto antes de meterlo en HTML */
 function escaparHTML(texto){
@@ -4050,6 +3987,13 @@ document.getElementById("reflexion-imagen").addEventListener("click", async () =
 });
 })();
 
+</script>
+
+<script>
+// Evita el menú de "Guardar imagen" al mantener presionado, para que se sienta como app nativa
+document.addEventListener("contextmenu", (e) => {
+    if(e.target && e.target.tagName === "IMG") e.preventDefault();
+});
 </script>
 
 <script src="offline.js" defer></script>
