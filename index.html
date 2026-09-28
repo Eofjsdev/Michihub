@@ -206,11 +206,11 @@ header{
 }
 .radio-marquee span{
     display:inline-block;
-    animation:radioMarquee var(--marquee-dur,8s) linear infinite alternate;
+    animation:radioMarquee var(--marquee-dur,8s) linear infinite;
 }
 @keyframes radioMarquee{
-    from{transform:translateX(var(--marquee-dist,0px));}
-    to{transform:translateX(0);}
+    from{transform:translateX(-100%);}
+    to{transform:translateX(var(--marquee-cont,140px));}
 }
 
 /* MAIN */
@@ -1133,9 +1133,9 @@ function ajustarMarqueeRadio(){
     const cont = document.getElementById("radio-marquee");
     const txt = document.getElementById("radio-marquee-text");
     if(!cont || !txt) return;
-    const dist = Math.max(0, txt.scrollWidth - cont.clientWidth);
-    cont.style.setProperty("--marquee-dist", "-" + dist + "px");
-    cont.style.setProperty("--marquee-dur", Math.max(2, dist / 40) + "s");
+    const total = txt.scrollWidth + cont.clientWidth;
+    cont.style.setProperty("--marquee-cont", cont.clientWidth + "px");
+    cont.style.setProperty("--marquee-dur", Math.max(2, total / 40) + "s");
 }
 window.addEventListener("load", ajustarMarqueeRadio);
 
