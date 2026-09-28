@@ -752,7 +752,9 @@ configurarPWA();
 (function(){
     const SUPABASE_URL = "https://xeongtzcemodcpfdzqws.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhlb25ndHpjZW1vZGNwZmR6cXdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3ODQ4NzksImV4cCI6MjEwNTM2MDg3OX0.CiB3HW5KzRYPvpYS1SwfncSny_sXOvY48nustEsmnLQ";
-    const supabaseChat = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Comparte la sesión de index.html (misma storageKey) para que el servidor sepa quién eres
+    const supabaseChat = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY,
+        { auth: { storageKey: "michihub-cuentas-auth", detectSessionInUrl: false } });
 
     const mensajesDiv = document.getElementById("chat-mensajes");
     const inputTexto = document.getElementById("input-chat-texto");
