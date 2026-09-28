@@ -133,6 +133,22 @@ header{
     opacity:0.55;
 }
 
+.radio-marquee{
+    width:140px;
+    overflow:hidden;
+    font-size:0.68rem;
+    opacity:0.7;
+    white-space:nowrap;
+}
+.radio-marquee span{
+    display:inline-block;
+    animation:radioMarquee var(--marquee-dur,8s) linear infinite alternate;
+}
+@keyframes radioMarquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(var(--marquee-dist,0px));}
+}
+
 /* MAIN */
 main{
     width:100%;
@@ -573,6 +589,7 @@ nav.menu-principal a.activo{
 <span id="radio-text">Pausado</span>
 <span id="radio-artista">MichiHub Radio</span>
 <span id="radio-duracion"></span>
+<div class="radio-marquee" id="radio-marquee"><span id="radio-marquee-text">This Michihub live stream 24/7 focused on the chillest lofi beats to study, work and chill everytime, everywhere</span></div>
 </div>
 <button id="radio-btn" onclick="toggleMusic()">▶</button>
 </div>
@@ -1029,6 +1046,18 @@ function iniciarMetadataRadio(){
 }
 
 iniciarMetadataRadio();
+
+/* Texto que va de izquierda a derecha y regresa, mostrando todo el texto */
+function ajustarMarqueeRadio(){
+    const cont = document.getElementById("radio-marquee");
+    const txt = document.getElementById("radio-marquee-text");
+    if(!cont || !txt) return;
+    const dist = Math.max(0, txt.scrollWidth - cont.clientWidth);
+    cont.style.setProperty("--marquee-dist", "-" + dist + "px");
+    cont.style.setProperty("--marquee-dur", Math.max(2, dist / 40) + "s");
+}
+window.addEventListener("load", ajustarMarqueeRadio);
+
 
 function toggleMusic(){
     if(music.paused){
