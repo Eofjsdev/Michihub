@@ -133,6 +133,70 @@ header{
     opacity:0.55;
 }
 
+.radio-titulo-fila{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.radio-meta .radio-titulo-fila #radio-text{
+    max-width:95px;
+}
+.radio-live{
+    font-size:0.55rem;
+    font-weight:bold;
+    color:#e53935;
+    letter-spacing:0.5px;
+    white-space:nowrap;
+    flex-shrink:0;
+    animation:radioLive 1.2s ease-in-out infinite;
+}
+@keyframes radioLive{
+    0%,100%{opacity:1;}
+    50%{opacity:0.2;}
+}
+.radio-fila-dur{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.radio-eq{
+    display:flex;
+    align-items:flex-end;
+    gap:2px;
+    height:12px;
+}
+.radio-eq i{
+    display:block;
+    width:3px;
+    height:3px;
+    background:var(--accent);
+    border-radius:1px;
+}
+.radio-eq.activo i{
+    animation:radioEq 0.9s ease-in-out infinite;
+}
+.radio-eq.activo i:nth-child(2){animation-delay:-0.3s;animation-duration:0.7s;}
+.radio-eq.activo i:nth-child(3){animation-delay:-0.6s;animation-duration:1.1s;}
+.radio-eq.activo i:nth-child(4){animation-delay:-0.15s;animation-duration:0.8s;}
+@keyframes radioEq{
+    0%,100%{height:3px;}
+    50%{height:12px;}
+}
+.radio-progreso{
+    width:140px;
+    height:3px;
+    background:rgba(128,128,128,0.25);
+    border-radius:2px;
+    overflow:hidden;
+    margin:3px 0;
+}
+.radio-progreso-barra{
+    height:100%;
+    width:0%;
+    background:var(--accent);
+    border-radius:2px;
+    transition:width 1s linear;
+}
 .radio-marquee{
     width:140px;
     overflow:hidden;
@@ -145,8 +209,8 @@ header{
     animation:radioMarquee var(--marquee-dur,8s) linear infinite alternate;
 }
 @keyframes radioMarquee{
-    from{transform:translateX(0);}
-    to{transform:translateX(var(--marquee-dist,0px));}
+    from{transform:translateX(var(--marquee-dist,0px));}
+    to{transform:translateX(0);}
 }
 
 /* MAIN */
@@ -586,9 +650,10 @@ nav.menu-principal a.activo{
 <div class="radio-player">
 <img id="radio-cover" class="radio-cover" src="icon-192.png" alt="Portada">
 <div class="radio-meta">
-<span id="radio-text">Pausado</span>
+<div class="radio-titulo-fila"><span id="radio-text">Pausado</span><span class="radio-live">● EN VIVO</span></div>
 <span id="radio-artista">MichiHub Radio</span>
-<span id="radio-duracion"></span>
+<div class="radio-fila-dur"><span id="radio-duracion"></span><div class="radio-eq" id="radio-eq"><i></i><i></i><i></i><i></i></div></div>
+<div class="radio-progreso"><div class="radio-progreso-barra" id="radio-progreso-barra"></div></div>
 <div class="radio-marquee" id="radio-marquee"><span id="radio-marquee-text">This Michihub live stream 24/7 focused on the chillest lofi beats to study, work and chill everytime, everywhere</span></div>
 </div>
 <button id="radio-btn" onclick="toggleMusic()">▶</button>
@@ -948,6 +1013,8 @@ function notificarCancionRadio(artista, titulo, portadaUrl){
 }
 
 let cancionActual = "";
+let inicioCancion = 0;
+let duracionCancion = 0;
 
 /* Notificación de reproducción del sistema (pantalla de bloqueo / centro de control) */
 function actualizarMediaSession(titulo, artista, portadaUrl){
@@ -975,6 +1042,8 @@ if("mediaSession" in navigator){
 
 function actualizarUIMusica(reproduciendo){
     radioBtn.innerText = reproduciendo ? "❚❚" : "▶";
+    const eq = document.getElementById("radio-eq");
+    if(eq) eq.classList.toggle("activo", reproduciendo);
     if(!cancionActual){
         radioText.innerText = reproduciendo ? "Reproduciendo" : "Pausado";
     }
@@ -1003,6 +1072,7 @@ async function buscarPortadaDeezer(artista, titulo){
             let portada = track.album.cover_medium || track.album.cover || "icon-192.png";
             radioCover.src = portada;
             radioDuracion.innerText = track.duration ? formatearDuracion(track.duration) : "";
+            duracionCancion = track.duration || 0;
             actualizarMediaSession(titulo, artista, portada);
         }
     }catch(e){
@@ -1032,6 +1102,8 @@ function iniciarMetadataRadio(){
             radioText.innerText = titulo;
             radioArtista.innerText = artista;
             radioDuracion.innerText = "";
+            duracionCancion = 0;
+            inicioCancion = Date.now();
             radioCover.src = "icon-192.png";
             actualizarMediaSession(titulo, artista, "icon-192.png");
             notificarCancionRadio(artista, titulo, "icon-192.png");
@@ -1046,6 +1118,15 @@ function iniciarMetadataRadio(){
 }
 
 iniciarMetadataRadio();
+
+/* Barra de progreso de la canción actual (tiempo desde que cambió la canción / duración de Deezer) */
+setInterval(() => {
+    const barra = document.getElementById("radio-progreso-barra");
+    if(!barra) return;
+    if(!duracionCancion || !inicioCancion){ barra.style.width = "0%"; return; }
+    const pct = Math.min(100, ((Date.now() - inicioCancion) / 1000) / duracionCancion * 100);
+    barra.style.width = pct + "%";
+}, 1000);
 
 /* Texto que va de izquierda a derecha y regresa, mostrando todo el texto */
 function ajustarMarqueeRadio(){
