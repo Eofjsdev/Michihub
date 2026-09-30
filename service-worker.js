@@ -2,7 +2,7 @@
 const VERSION = "michihub-v5";
 const CACHE_PRECARGA = VERSION + "-precarga";
 const CACHE_DINAMICA = VERSION + "-dinamica";
-const ARCHIVOS = ["./", "index.html", "chat.html", "Radio.html", "frecuencia.html", "manifest.json", "offline.js", "icon-192.png", "icon-512.png", "radio-beep.mp3"];
+const ARCHIVOS = ["./", "index.html", "chat.html", "Sismos.html", "Radio.html", "frecuencia.html", "manifest.json", "offline.js", "icon-192.png", "icon-512.png", "radio-beep.mp3"];
 // Recursos externos que las páginas necesitan para arrancar: se guardan al instalar, para que la
 // app abra sin internet aunque la primera visita haya sido la única con conexión.
 const EXTERNOS_PRECARGA = [
