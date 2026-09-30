@@ -106,6 +106,46 @@ main{
 
 .btn-accion{padding:8px 20px;border:none;border-radius:20px;background:var(--accent);color:white;cursor:pointer;font-size:0.9rem}
 
+#loading-screen{
+    position:fixed;
+    inset:0;
+    background-color:var(--bg-base);
+    background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    z-index:9999;
+    transition:opacity 0.5s ease;
+}
+#loading-screen.fade-out{
+    opacity:0;
+    pointer-events:none;
+}
+#loading-screen h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.5rem;
+    color:var(--text-main);
+}
+.loading-bar-track{
+    width:200px;
+    height:8px;
+    border-radius:6px;
+    background:rgba(74,66,56,0.15);
+    overflow:hidden;
+}
+.loading-bar-fill{
+    width:40%;
+    height:100%;
+    background:var(--accent);
+    animation:deslizar-carga 1.1s ease-in-out infinite;
+}
+@keyframes deslizar-carga{
+    0%{ transform:translateX(-100%); }
+    100%{ transform:translateX(350%); }
+}
+
 /* SISMOS */
 #sismos-card .card-title{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
 #sismos-card .card-title img{height:1.2em;width:1.2em;border-radius:50%;vertical-align:middle}
@@ -148,6 +188,12 @@ main{
 </style>
 </head>
 <body>
+
+<div id="loading-screen">
+<h1>MichiHub</h1>
+<div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
+</div>
+
 
 <header>
 <div class="logo-area">
@@ -466,5 +512,31 @@ setInterval(pintar, 60000);
 
 })();
 </script>
+<script>
+/* PANTALLA DE CARGA */
+let loadingTimeoutId = null;
+
+function mostrarPantallaCarga(){
+    let loading = document.getElementById("loading-screen");
+    if(!loading) return;
+
+    clearTimeout(loadingTimeoutId);
+    loading.classList.remove("fade-out");
+
+    loadingTimeoutId = setTimeout(() => {
+        loading.classList.add("fade-out");
+    }, 1400);
+}
+
+window.addEventListener("load", mostrarPantallaCarga);
+window.addEventListener("pageshow", (e) => {
+    if(e.persisted) mostrarPantallaCarga();
+});
+document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible") mostrarPantallaCarga();
+});
+mostrarPantallaCarga();
+</script>
+
 </body>
 </html>
