@@ -131,6 +131,19 @@ main{
 .sismo .enlaces{margin-top:8px;display:flex;gap:14px;flex-wrap:wrap;font-size:.82rem}
 .sismo a{color:var(--text-main);font-weight:bold;text-decoration:underline}
 .sismo-vacio,.sismo-error{text-align:center;opacity:.75;padding:20px 0}
+.btn-compartir{padding:6px 16px;border:none;border-radius:20px;background:var(--accent);color:white;font-family:inherit;font-weight:bold;font-size:.82rem;cursor:pointer}
+.btn-compartir:disabled{opacity:.6}
+/* AVISO ANTES DE ABRIR TELEGRAM */
+#aviso-telegram{position:fixed;inset:0;background:rgba(74,66,56,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:9000}
+#aviso-telegram.activo{display:flex}
+#aviso-telegram .caja{background-color:var(--bg-base);background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');border-radius:20px;padding:30px 24px;width:100%;max-width:380px;text-align:center;box-shadow:0 8px 25px var(--shadow)}
+#aviso-telegram .caja img{width:72px;height:72px;border-radius:50%;margin-bottom:12px;box-shadow:0 4px 10px var(--shadow)}
+#aviso-telegram h2{font-family:'Playfair Display',serif;margin-bottom:12px;color:var(--text-main)}
+#aviso-telegram p{color:var(--text-main);line-height:1.5;margin-bottom:8px;font-size:.95rem}
+#aviso-telegram .nota{font-size:.78rem;opacity:.65;margin-bottom:18px}
+#aviso-telegram .botones{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+#aviso-telegram .btn-accion{font-family:inherit;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+#aviso-telegram .btn-secundario{background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 10px var(--shadow)}
 .btn-telegram{display:inline-flex;align-items:center;gap:6px;text-decoration:none;padding:8px 20px;border-radius:20px;background:var(--accent);color:white;font-weight:bold;font-size:0.9rem}
 </style>
 </head>
@@ -167,6 +180,20 @@ main{
 </div>
 
 </main>
+
+
+<div id="aviso-telegram" role="dialog" aria-modal="true" aria-labelledby="aviso-titulo">
+<div class="caja">
+<img src="icon-192.png" alt="MichiHub">
+<h2 id="aviso-titulo">Canal oficial de MichiHub</h2>
+<p>Únete a nuestro canal de Telegram para recibir las alertas de sismos en tiempo real y las novedades de la comunidad. 🐾</p>
+<p class="nota">Se abrirá Telegram en una nueva pestaña o en la app.</p>
+<div class="botones">
+<a id="aviso-abrir" class="btn-accion" href="#" target="_blank" rel="noopener"><img src="icon-192.png" alt="" style="width:1em;height:1em;margin:0;box-shadow:none;">Abrir canal</a>
+<button type="button" id="aviso-cerrar" class="btn-accion btn-secundario">Ahora no</button>
+</div>
+</div>
+</div>
 
 <script>
 (function(){
@@ -216,6 +243,7 @@ function pintar(){
             + '<div class="enlaces">'
             + '<a href="'+esc(s.url)+'" target="_blank" rel="noopener">🔗 Ver detalle en USGS</a>'
             + '<a href="https://www.google.com/maps?q='+s.lat+','+s.lon+'" target="_blank" rel="noopener">🗺️ Ver en mapa</a>'
+            + '<button type="button" class="btn-compartir" data-id="'+esc(s.id)+'">📤 Compartir</button>'
             + '</div></div></div>';
     }).join("");
 }
@@ -262,6 +290,160 @@ async function cargar(){
     }
 }
 
+
+/* ===== COMPARTIR: genera una imagen con el diseño de MichiHub ===== */
+const FUENTE_TITULO = "'Playfair Display', serif";
+const FUENTE_TEXTO = "'Nunito', sans-serif";
+
+function cargarImagen(src){
+    return new Promise((ok, fallo) => {
+        const im = new Image();
+        im.onload = () => ok(im);
+        im.onerror = fallo;
+        im.src = src;
+    });
+}
+function rectRedondo(ctx, x, y, w, h, r){
+    ctx.beginPath();
+    ctx.moveTo(x+r, y);
+    ctx.arcTo(x+w, y, x+w, y+h, r);
+    ctx.arcTo(x+w, y+h, x, y+h, r);
+    ctx.arcTo(x, y+h, x, y, r);
+    ctx.arcTo(x, y, x+w, y, r);
+    ctx.closePath();
+}
+function lineas(ctx, texto, maxAncho){
+    const palabras = String(texto).split(/\s+/);
+    const res = [];
+    let actual = "";
+    palabras.forEach(p => {
+        const prueba = actual ? actual+" "+p : p;
+        if(ctx.measureText(prueba).width > maxAncho && actual){ res.push(actual); actual = p; }
+        else actual = prueba;
+    });
+    if(actual) res.push(actual);
+    return res;
+}
+
+async function crearImagen(s){
+    try{ if(document.fonts){ await Promise.all([
+        document.fonts.load("bold 40px "+FUENTE_TITULO),
+        document.fonts.load("bold 40px "+FUENTE_TEXTO)
+    ]); } }catch(e){}
+    let logo = null;
+    try{ logo = await cargarImagen("icon-192.png"); }catch(e){}
+
+    const W = 1080, H = 1350;
+    const c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    const ctx = c.getContext("2d");
+
+    // Fondo crema de la página
+    ctx.fillStyle = "#f4f0ea";
+    ctx.fillRect(0, 0, W, H);
+    const brillo = ctx.createRadialGradient(W/2, 0, 50, W/2, 0, 900);
+    brillo.addColorStop(0, "rgba(255,255,255,0.7)");
+    brillo.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = brillo;
+    ctx.fillRect(0, 0, W, H);
+
+    // Encabezado: logo + nombre
+    const cx = W/2;
+    if(logo){
+        ctx.save();
+        ctx.beginPath(); ctx.arc(cx, 150, 70, 0, Math.PI*2); ctx.clip();
+        ctx.drawImage(logo, cx-70, 80, 140, 140);
+        ctx.restore();
+    }
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#4a4238";
+    ctx.font = "bold 78px "+FUENTE_TITULO;
+    ctx.fillText("MichiHub", cx, 305);
+    ctx.font = "bold 32px "+FUENTE_TEXTO;
+    ctx.fillStyle = "#b09e8d";
+    ctx.fillText("SISMOS EN VIVO", cx, 355);
+
+    // Tarjeta
+    const x = 70, y = 410, w = W-140, h = 760;
+    ctx.save();
+    ctx.shadowColor = "rgba(138,125,110,0.25)";
+    ctx.shadowBlur = 40; ctx.shadowOffsetY = 14;
+    rectRedondo(ctx, x, y, w, h, 44);
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    ctx.fill();
+    ctx.restore();
+
+    // Franja de acento
+    ctx.save();
+    rectRedondo(ctx, x, y, w, h, 44); ctx.clip();
+    ctx.fillStyle = s.mag >= 6 ? "#9c2f22" : s.mag >= 5 ? "#a8641f" : "#b09e8d";
+    ctx.fillRect(x, y, 16, h);
+    ctx.restore();
+
+    // Contenido
+    ctx.fillStyle = "#4a4238";
+    ctx.font = "bold 44px "+FUENTE_TITULO;
+    ctx.fillText("⚠️ Sismo detectado", cx, y+100);
+
+    ctx.font = "bold 190px "+FUENTE_TITULO;
+    ctx.fillStyle = s.mag >= 6 ? "#9c2f22" : s.mag >= 5 ? "#a8641f" : "#4a4238";
+    ctx.fillText(s.mag.toFixed(1), cx, y+300);
+    ctx.font = "bold 34px "+FUENTE_TEXTO;
+    ctx.fillStyle = "#b09e8d";
+    ctx.fillText("MAGNITUD" + (s.tipoMag ? " · " + s.tipoMag.toUpperCase() : ""), cx, y+355);
+
+    ctx.fillStyle = "#4a4238";
+    ctx.font = "bold 46px "+FUENTE_TEXTO;
+    const ls = lineas(ctx, "📍 " + s.lugar, w-140).slice(0, 3);
+    ls.forEach((t, i) => ctx.fillText(t, cx, y+450 + i*60));
+
+    const yInfo = y+450 + ls.length*60 + 30;
+    ctx.font = "38px "+FUENTE_TEXTO;
+    ctx.fillText("Profundidad: " + s.prof.toFixed(1) + " km", cx, yInfo);
+    ctx.fillText("🕐 " + fechaUTC(s.tiempo), cx, yInfo+58);
+
+    // Pie
+    ctx.fillStyle = "#4a4238";
+    ctx.font = "bold 34px "+FUENTE_TEXTO;
+    ctx.fillText("cruzangelsaid34.github.io/Michihub", cx, H-110);
+    ctx.font = "28px "+FUENTE_TEXTO;
+    ctx.fillStyle = "#b09e8d";
+    ctx.fillText("Datos: USGS · t.me/michihub_oficial", cx, H-62);
+
+    return await new Promise(ok => c.toBlob(ok, "image/png"));
+}
+
+async function compartirSismo(id, boton){
+    const s = sismos.find(x => x.id === id);
+    if(!s) return;
+    const textoBoton = boton.textContent;
+    boton.disabled = true; boton.textContent = "Generando…";
+    try{
+        const blob = await crearImagen(s);
+        if(!blob) throw new Error("sin imagen");
+        const archivo = new File([blob], "sismo-M"+s.mag.toFixed(1)+"-michihub.png", {type:"image/png"});
+        const texto = "⚠️ Sismo M" + s.mag.toFixed(1) + " · " + s.lugar + "\n🕐 " + fechaUTC(s.tiempo) + "\n" + s.url;
+        if(navigator.canShare && navigator.canShare({files:[archivo]})){
+            await navigator.share({files:[archivo], title:"Sismo detectado · MichiHub", text:texto});
+        }else{
+            // Sin compartir nativo: se descarga la imagen
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = archivo.name;
+            document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+    }catch(e){
+        if(e && e.name !== "AbortError") alert("No se pudo generar la imagen para compartir.");
+    }
+    boton.disabled = false; boton.textContent = textoBoton;
+}
+
+document.getElementById("lista").addEventListener("click", e => {
+    const b = e.target.closest(".btn-compartir");
+    if(b) compartirSismo(b.dataset.id, b);
+});
+
 document.getElementById("filtros").addEventListener("click", e => {
     const b = e.target.closest("button");
     if(!b) return;
@@ -273,8 +455,17 @@ document.getElementById("filtros").addEventListener("click", e => {
 
 if(TELEGRAM_URL){
     const a = document.getElementById("btn-telegram");
+    const aviso = document.getElementById("aviso-telegram");
     a.href = TELEGRAM_URL;
-    a.style.display = "inline-block";
+    a.style.display = "inline-flex";
+    document.getElementById("aviso-abrir").href = TELEGRAM_URL;
+    const cerrar = () => aviso.classList.remove("activo");
+    // Al tocar el botón se muestra el mensaje antes de abrir Telegram
+    a.addEventListener("click", e => { e.preventDefault(); aviso.classList.add("activo"); });
+    document.getElementById("aviso-abrir").addEventListener("click", () => setTimeout(cerrar, 100));
+    document.getElementById("aviso-cerrar").addEventListener("click", cerrar);
+    aviso.addEventListener("click", e => { if(e.target === aviso) cerrar(); });
+    document.addEventListener("keydown", e => { if(e.key === "Escape") cerrar(); });
 }
 
 cargar();
