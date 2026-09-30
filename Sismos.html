@@ -333,7 +333,7 @@ async function crearImagen(s){
     let logo = null;
     try{ logo = await cargarImagen("icon-192.png"); }catch(e){}
 
-    const W = 1080, H = 1350;
+    const W = 1080, H = 1270;
     const c = document.createElement("canvas");
     c.width = W; c.height = H;
     const ctx = c.getContext("2d");
@@ -401,14 +401,6 @@ async function crearImagen(s){
     ctx.font = "38px "+FUENTE_TEXTO;
     ctx.fillText("Profundidad: " + s.prof.toFixed(1) + " km", cx, yInfo);
     ctx.fillText("🕐 " + fechaUTC(s.tiempo), cx, yInfo+58);
-
-    // Pie
-    ctx.fillStyle = "#4a4238";
-    ctx.font = "bold 34px "+FUENTE_TEXTO;
-    ctx.fillText("cruzangelsaid34.github.io/Michihub", cx, H-110);
-    ctx.font = "28px "+FUENTE_TEXTO;
-    ctx.fillStyle = "#b09e8d";
-    ctx.fillText("Datos: USGS · t.me/michihub_oficial", cx, H-62);
 
     return await new Promise(ok => c.toBlob(ok, "image/png"));
 }
