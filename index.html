@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MichiHub | Lo-fi Lounge</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#b09e8d">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -728,21 +731,26 @@ Crear Credencial
    poder descargar esos recursos por red desde una URL real). */
 function configurarPWA(){
     // Ícono para iOS ("Añadir a pantalla de inicio")
-    let linkApple = document.createElement("link");
-    linkApple.rel = "apple-touch-icon";
-    linkApple.href = "icon-192.png";
-    document.head.appendChild(linkApple);
-
-    let metaTheme = document.createElement("meta");
-    metaTheme.name = "theme-color";
-    metaTheme.content = "#b09e8d";
-    document.head.appendChild(metaTheme);
-
-    // Manifest (necesario para que Chrome/Android ofrezcan instalar)
-    let linkManifest = document.createElement("link");
-    linkManifest.rel = "manifest";
-    linkManifest.href = "manifest.json";
-    document.head.appendChild(linkManifest);
+    // (el manifest, el ícono y el theme-color ya están fijos en el <head> para que los detecten
+    //  herramientas como PWABuilder; aquí solo se agregan si faltaran)
+    if(!document.querySelector('link[rel="apple-touch-icon"]')){
+        let linkApple = document.createElement("link");
+        linkApple.rel = "apple-touch-icon";
+        linkApple.href = "icon-192.png";
+        document.head.appendChild(linkApple);
+    }
+    if(!document.querySelector('meta[name="theme-color"]')){
+        let metaTheme = document.createElement("meta");
+        metaTheme.name = "theme-color";
+        metaTheme.content = "#b09e8d";
+        document.head.appendChild(metaTheme);
+    }
+    if(!document.querySelector('link[rel="manifest"]')){
+        let linkManifest = document.createElement("link");
+        linkManifest.rel = "manifest";
+        linkManifest.href = "manifest.json";
+        document.head.appendChild(linkManifest);
+    }
 
     // Service worker mínimo (necesario para que se considere "instalable")
     if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
