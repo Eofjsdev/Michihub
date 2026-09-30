@@ -1632,7 +1632,7 @@ async function subirReadmePersonalizado(providerToken, usuarioGH, nombreRepo, no
     const fechaBadge = new Date().toISOString().slice(0, 10).replace(/-/g, "--");
 
     const badges =
-        "[![Hecho con MichiHub](https://img.shields.io/badge/Hecho_con-MichiHub-b09e8d?style=for-the-badge&logo=cachet&logoColor=white)](https://cruzangelsaid34.github.io/Michihub/) " +
+        "[![Hecho con MichiHub](https://img.shields.io/badge/Hecho_con-MichiHub-b09e8d?style=for-the-badge&logo=cachet&logoColor=white)](https://eofjsdev.github.io/Michihub/) " +
         "![Creado](https://img.shields.io/badge/Creado-" + fechaBadge + "-4a4238?style=for-the-badge)" +
         (rango ? " ![Rango](https://img.shields.io/badge/Rango-" + encodeURIComponent(rango.titulo.replace(/ /g, "_")) + "-8a5a34?style=for-the-badge)" : "") +
         "\n\n";
@@ -1699,7 +1699,7 @@ async function crearRepoGitHubAutomatico(providerToken, usuarioGH, nombre, fotoU
             body: JSON.stringify({
                 name: nombreRepo,
                 description: "🐾 Tu rincón en MichiHub: bienvenida, certificado de membresía y rango. Creado automáticamente al iniciar sesión. Donde cada michi encuentra su lugar 💙",
-                homepage: "https://cruzangelsaid34.github.io/Michihub/",
+                homepage: "https://eofjsdev.github.io/Michihub/",
                 private: false
             })
         });

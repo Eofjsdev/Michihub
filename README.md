@@ -20,7 +20,7 @@ Para consultar los permisos aplicables, revisa el archivo [LICENSE](LICENSE). La
 
 ## Sitio oficial
 
-[Visitar MichiHub](https://cruzangelsaid34.github.io/Michihub/)
+[Visitar MichiHub](https://eofjsdev.github.io/Michihub/)
 
 ## Contacto
 
