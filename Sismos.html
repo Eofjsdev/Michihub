@@ -227,9 +227,6 @@ main{
 <h1>MichiHub</h1>
 <p>Sismos</p>
 </div>
-<button id="btn-instalar" style="display:none;border:none;background:var(--accent);color:white;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;">
-📲 Instalar app
-</button>
 </header>
 
 <nav class="menu-principal">
@@ -805,28 +802,6 @@ function configurarPWA(){
     }
 }
 configurarPWA();
-
-/* Botón "Instalar app" (Chrome/Edge/Android) */
-let promptDiferido = null;
-const btnInstalar = document.getElementById("btn-instalar");
-
-window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    promptDiferido = e;
-    btnInstalar.style.display = "inline-block";
-});
-
-btnInstalar.addEventListener("click", async () => {
-    if(!promptDiferido) return;
-    promptDiferido.prompt();
-    await promptDiferido.userChoice;
-    promptDiferido = null;
-    btnInstalar.style.display = "none";
-});
-
-window.addEventListener("appinstalled", () => {
-    btnInstalar.style.display = "none";
-});
 </script>
 <script src="offline.js" defer></script>
 
