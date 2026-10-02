@@ -195,11 +195,18 @@ main{
 </div>
 
 
+<audio id="bg-music-sync" loop style="display:none;">
+<source src="https://stream.zeno.fm/f3wvbbqmdg8uv" type="audio/mpeg">
+</audio>
+
 <header>
 <div class="logo-area">
 <h1>MichiHub</h1>
 <p>Sismos</p>
 </div>
+<button id="btn-instalar" style="display:none;border:none;background:var(--accent);color:white;padding:8px 18px;border-radius:20px;cursor:pointer;font-weight:bold;">
+📲 Instalar app
+</button>
 </header>
 
 <nav class="menu-principal">
@@ -537,6 +544,73 @@ document.addEventListener("visibilitychange", () => {
 });
 mostrarPantallaCarga();
 </script>
+
+<script>
+/* Retomar música en segundo plano si estaba sonando en la página anterior */
+(function retomarMusicaSiEstabaSonando(){
+    const musicaSync = document.getElementById("bg-music-sync");
+    if(localStorage.getItem("michihubMusicaEstado") !== "reproduciendo") return;
+
+    musicaSync.play().catch(() => {
+        const reanudarConToque = () => {
+            if(localStorage.getItem("michihubMusicaEstado") === "reproduciendo"){
+                musicaSync.play().catch(() => {});
+            }
+            document.removeEventListener("click", reanudarConToque);
+            document.removeEventListener("touchstart", reanudarConToque);
+        };
+        document.addEventListener("click", reanudarConToque, { once: true });
+        document.addEventListener("touchstart", reanudarConToque, { once: true });
+    });
+})();
+
+/* PWA: manifest + ícono + service worker */
+function configurarPWA(){
+    let linkApple = document.createElement("link");
+    linkApple.rel = "apple-touch-icon";
+    linkApple.href = "icon-192.png";
+    document.head.appendChild(linkApple);
+
+    let metaTheme = document.createElement("meta");
+    metaTheme.name = "theme-color";
+    metaTheme.content = "#b09e8d";
+    document.head.appendChild(metaTheme);
+
+    let linkManifest = document.createElement("link");
+    linkManifest.rel = "manifest";
+    linkManifest.href = "manifest.json";
+    document.head.appendChild(linkManifest);
+
+    if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+        navigator.serviceWorker.register("service-worker.js")
+            .catch(err => console.log("No se pudo registrar el service worker:", err));
+    }
+}
+configurarPWA();
+
+/* Botón "Instalar app" (Chrome/Edge/Android) */
+let promptDiferido = null;
+const btnInstalar = document.getElementById("btn-instalar");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    promptDiferido = e;
+    btnInstalar.style.display = "inline-block";
+});
+
+btnInstalar.addEventListener("click", async () => {
+    if(!promptDiferido) return;
+    promptDiferido.prompt();
+    await promptDiferido.userChoice;
+    promptDiferido = null;
+    btnInstalar.style.display = "none";
+});
+
+window.addEventListener("appinstalled", () => {
+    btnInstalar.style.display = "none";
+});
+</script>
+<script src="offline.js" defer></script>
 
 </body>
 </html>
