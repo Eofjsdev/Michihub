@@ -1,5 +1,5 @@
 /* MichiHub - Service Worker */
-const VERSION = "michihub-v6";
+const VERSION = "michihub-v7";
 const CACHE_PRECARGA = VERSION + "-precarga";
 const CACHE_DINAMICA = VERSION + "-dinamica";
 const ARCHIVOS = ["./", "index.html", "chat.html", "Comunidad.html", "Sismos.html", "frecuencia.html", "manifest.json", "offline.js", "icon-192.png", "icon-512.png"];
@@ -9,7 +9,9 @@ const EXTERNOS_PRECARGA = [
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
   "https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Playfair+Display:ital@1&display=swap",
   "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap",
-  "https://www.transparenttextures.com/patterns/cream-paper.png"
+  "https://www.transparenttextures.com/patterns/cream-paper.png",
+  "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js",
+  "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
 ];
 const HOSTS_EXTERNOS_CACHEABLES = ["cdn.jsdelivr.net", "fonts.googleapis.com", "fonts.gstatic.com", "www.transparenttextures.com"];
 const ESPERA_RED_PAGINAS_MS = 4000;
