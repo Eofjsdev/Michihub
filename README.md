@@ -4,9 +4,9 @@
 
 MichiHub es una plataforma social y un lounge digital con reflexiones diarias, juegos, radio, chat, credenciales y herramientas para la comunidad.
 
+### Documentación
 
-
-
+[🔐 Security](SECURITY.md) · [📜 Nuestra historia](HISTORIA.md)
 
 ## Propiedad intelectual
 
@@ -20,7 +20,7 @@ Para consultar los permisos aplicables, revisa el archivo [LICENSE](LICENSE). La
 
 ## Sitio oficial
 
-[Visitar MichiHub](https://cruzangelsaid34.github.io/Michihub/)
+[Visitar MichiHub](https://eofjsdev.github.io/Michihub/)
 
 ## Contacto
 
