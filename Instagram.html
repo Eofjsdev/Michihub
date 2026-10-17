@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MichiHub | Instagram</title>
+<style>
+img{
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-user-drag:none;
+}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Playfair+Display:ital@1&display=swap');
+
+:root {
+    --bg-base: #f4f0ea;
+    --text-main: #4a4238;
+    --card-bg: rgba(255, 255, 255, 0.6);
+    --accent: #b09e8d;
+    --shadow: rgba(138, 125, 110, 0.15);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    background-color:var(--bg-base);
+    background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    color:var(--text-main);
+    font-family:'Nunito',sans-serif;
+    min-height:100vh;
+    padding:30px 20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+/* HEADER */
+header{
+    width:100%;
+    max-width:600px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    margin-bottom:20px;
+    gap:20px;
+}
+
+.logo-area h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.5rem;
+}
+
+.link-recuperar{display:block;text-align:center;margin-top:12px;font-size:0.85rem;color:var(--text-main);opacity:0.7;text-decoration:underline;cursor:pointer}
+
+/* MENU DE NAVEGACION */
+nav.menu-principal{
+    width:100%;
+    max-width:600px;
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    margin-bottom:20px;
+    flex-wrap:nowrap;
+}
+nav.menu-principal a{
+    text-decoration:none;
+    color:var(--text-main);
+    background:var(--card-bg);
+    padding:6px 4px;
+    border-radius:16px;
+    font-weight:bold;
+    box-shadow:0 4px 10px var(--shadow);
+    font-size:0.68rem;
+    white-space:nowrap;
+    flex:1;
+    text-align:center;
+}
+nav.menu-principal a.activo{
+    background:var(--accent);
+    color:white;
+}
+
+/* MAIN */
+main{
+    width:100%;
+    max-width:600px;
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+}
+
+.card{
+    background:var(--card-bg);
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 8px 25px var(--shadow);
+    width:100%;
+}
+
+.card-title{
+    font-family:'Playfair Display',serif;
+    margin-bottom:20px;
+}
+
+.btn-accion{padding:8px 20px;border:none;border-radius:20px;background:var(--accent);color:white;cursor:pointer;font-size:0.9rem}
+
+#loading-screen{
+    position:fixed;
+    inset:0;
+    background-color:var(--bg-base);
+    background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    z-index:9999;
+    transition:opacity 0.5s ease;
+}
+#loading-screen.fade-out{
+    opacity:0;
+    pointer-events:none;
+}
+#loading-screen h1{
+    font-family:'Playfair Display',serif;
+    font-size:2.5rem;
+    color:var(--text-main);
+}
+.loading-bar-track{
+    width:200px;
+    height:8px;
+    border-radius:6px;
+    background:rgba(74,66,56,0.15);
+    overflow:hidden;
+}
+.loading-bar-fill{
+    width:40%;
+    height:100%;
+    background:var(--accent);
+    animation:deslizar-carga 1.1s ease-in-out infinite;
+}
+@keyframes deslizar-carga{
+    0%{ transform:translateX(-100%); }
+    100%{ transform:translateX(350%); }
+}
+
+
+/* INSTAGRAM */
+.ig-grad{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.ig-fila{display:flex;align-items:center;gap:14px}
+.ig-icono{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px var(--shadow)}
+.ig-icono svg{width:30px;height:30px}
+.ig-nombre{font-weight:bold;font-size:1.05rem}
+.ig-estado{font-size:.82rem;opacity:.8;display:flex;align-items:center;gap:6px}
+.ig-punto{width:9px;height:9px;border-radius:50%;background:#6aa06a;display:inline-block}
+.ig-punto.off{background:#b5564a}
+.tabs-ig{display:flex;gap:6px;overflow-x:auto;margin-bottom:16px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.tabs-ig button{flex:0 0 auto;padding:7px 14px;border:none;border-radius:16px;background:var(--card-bg);color:var(--text-main);font-family:inherit;font-weight:bold;font-size:.8rem;cursor:pointer;box-shadow:0 4px 10px var(--shadow)}
+.tabs-ig button.activo{background:var(--accent);color:white}
+.ig-sub{font-size:.85rem;opacity:.75;margin:-8px 0 16px;line-height:1.4}
+.item{background:rgba(255,255,255,.55);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 4px 10px var(--shadow)}
+.item .fila{display:flex;align-items:center;gap:12px}
+.item .info{flex:1;min-width:0}
+.item .titulo{font-weight:bold;word-wrap:break-word}
+.item .desc{font-size:.82rem;opacity:.75;word-wrap:break-word}
+.chiquito{font-size:.78rem;opacity:.7}
+.ig-in,.ig-ta,.ig-sel{width:100%;padding:10px;border-radius:10px;border:1px solid #cbbfb2;background:rgba(255,255,255,.7);color:var(--text-main);font-family:inherit;font-size:.95rem}
+.ig-ta{min-height:80px;resize:vertical}
+.ig-lbl{display:block;font-size:.8rem;font-weight:bold;margin:12px 0 4px}
+.ig-msg{font-size:.85rem;min-height:18px;margin:8px 0}
+.ig-msg.err{color:#b5564a}.ig-msg.ok{color:#4f8a4f}
+.filas-btn{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn-sec{background:var(--card-bg);color:var(--text-main);box-shadow:0 4px 10px var(--shadow);font-weight:bold}
+.btn-peligro{background:transparent;color:#b5564a;border:1px solid #b5564a;font-weight:bold}
+.btn-accion.mini{padding:6px 14px;font-size:.8rem}
+.btn-accion:disabled{opacity:.5}
+.etiqueta{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:bold;border:1px solid currentColor}
+.e-pendiente{color:#b08a3a}.e-publicado{color:#4f8a4f}.e-error{color:#b5564a}.e-publicando{color:#8a7d6e}.e-top{color:#4f8a4f}
+.miniatura{width:56px;height:56px;object-fit:cover;border-radius:10px;flex-shrink:0}
+.vid{width:56px;height:56px;border-radius:10px;background:rgba(74,66,56,.12);display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0}
+.sw{position:relative;display:inline-block;width:50px;height:28px;flex-shrink:0}
+.sw input{opacity:0;width:0;height:0}
+.sw span{position:absolute;inset:0;background:#cbbfb2;border-radius:28px;transition:.2s;cursor:pointer}
+.sw span:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.sw input:checked + span{background:var(--accent)}
+.sw input:checked + span:before{transform:translateX(22px)}
+.burbuja{padding:8px 12px;border-radius:14px;margin:4px 0;max-width:88%;word-wrap:break-word;font-size:.9rem}
+.b-in{background:rgba(74,66,56,.1)}
+.b-out{background:var(--accent);color:#fff;margin-left:auto}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.dato{background:rgba(255,255,255,.55);border-radius:14px;padding:10px;text-align:center;box-shadow:0 4px 10px var(--shadow)}
+.dato b{display:block;font-size:1.2rem}
+.dato span{font-size:.72rem;opacity:.75}
+.oculto{display:none!important}
+details.como{margin-top:6px}
+details.como summary{cursor:pointer;font-weight:bold;font-size:.9rem}
+details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
+</style>
+</head>
+<body>
+
+<div id="loading-screen">
+<h1>MichiHub</h1>
+<div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
+</div>
+
+<audio id="bg-music-sync" loop style="display:none;">
+<source src="https://stream.zeno.fm/f3wvbbqmdg8uv" type="audio/mpeg">
+</audio>
+
+<header>
+<div class="logo-area">
+<h1>MichiHub</h1>
+<p>Instagram</p>
+</div>
+</header>
+
+<nav class="menu-principal">
+<a href="index.html">🏠 Inicio</a>
+<a href="chat.html">💬 Chat</a>
+<a href="Comunidad.html">📸 Comunidad</a>
+<a href="Sismos.html">⚠️ Sismos</a>
+<a href="Instagram.html" class="activo">📷 Insta</a>
+</nav>
+
+<main>
+
+<div class="card" id="ig-login">
+<div class="ig-fila" style="margin-bottom:14px">
+<div class="ig-icono ig-grad"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="#fff" stroke="none"/></svg></div>
+<div><div class="ig-nombre">Conecta tu Instagram</div><div class="ig-estado">Responde comentarios y mensajes, y programa tus publicaciones.</div></div>
+</div>
+<label class="ig-lbl" for="ig-clave">Clave de administrador</label>
+<input class="ig-in" id="ig-clave" type="password" autocomplete="off" placeholder="Pega tu clave">
+<label class="ig-lbl" style="display:flex;gap:8px;align-items:center;font-weight:normal"><input type="checkbox" id="ig-recordar"> Recordar en este teléfono</label>
+<div class="ig-msg" id="ig-login-msg"></div>
+<button class="btn-accion" id="ig-entrar" style="width:100%;padding:12px;font-weight:bold">Entrar</button>
+</div>
+
+<div id="ig-app" class="oculto">
+
+<div class="card" id="ig-cuenta-card">
+<div id="ig-conectado" class="oculto">
+<div class="ig-fila">
+<div class="ig-icono ig-grad"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="#fff" stroke="none"/></svg></div>
+<div class="info" style="flex:1;min-width:0">
+<div class="ig-nombre" id="ig-cuenta">@cuenta</div>
+<div class="ig-estado"><i class="ig-punto"></i><span id="ig-estado-txt">Conectado</span></div>
+</div>
+<button class="btn-accion btn-sec mini" id="ig-desconectar">Desconectar</button>
+</div>
+<div class="filas-btn">
+<button class="btn-accion btn-sec mini" id="ig-reconectar">Reconectar cuenta</button>
+<button class="btn-accion btn-sec mini" id="ig-salir">Salir</button>
+</div>
+</div>
+<div id="ig-no-conectado" class="oculto">
+<div class="ig-icono ig-grad" style="margin-bottom:14px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="#fff" stroke="none"/></svg></div>
+<div class="ig-nombre" style="font-size:1.25rem;margin-bottom:6px">Conecta tu Instagram</div>
+<p class="ig-sub" style="margin:0 0 16px">Responde automáticamente a los comentarios y mensajes, y programa tus publicaciones.</p>
+<button class="btn-accion" id="ig-conectar" style="width:100%;padding:13px;font-weight:bold;font-size:1rem">Conectar con Instagram</button>
+<details class="como" style="text-align:center;margin-top:14px"><summary>Necesitas una cuenta profesional. ¿Cómo la activo?</summary>
+<p>En Instagram entra a Configuración → Tipo de cuenta y herramientas → Cambiar a cuenta profesional, y elige Creador o Empresa.</p></details>
+<div style="text-align:center;margin-top:10px"><button class="btn-accion btn-sec mini" id="ig-salir2">Salir</button></div>
+</div>
+<div class="ig-msg" id="ig-con-msg" style="margin-top:12px"></div>
+</div>
+
+<div id="ig-contenido" class="oculto">
+<div class="card">
+<div class="tabs-ig" id="ig-tabs">
+<button data-t="auto" class="activo">Respuestas</button>
+<button data-t="prog">Programar</button>
+<button data-t="com">Comentarios</button>
+<button data-t="msj">Mensajes</button>
+<button data-t="stats">Stats</button>
+</div>
+
+<section id="t-auto">
+<h2 class="card-title">Respuestas automáticas</h2>
+<p class="ig-sub">Cuando alguien comenta o escribe una de tus palabras, el bot contesta por ti. Escribe {usuario} y se cambia por el @ de la persona.</p>
+<div id="ig-reglas"></div>
+<div class="item" id="ig-form-regla">
+<label class="ig-lbl" for="rk" style="margin-top:0">Palabra o palabras (separadas por comas)</label>
+<input class="ig-in" id="rk" placeholder="precio, costo, cuánto">
+<label class="ig-lbl" for="rr">Respuesta automática</label>
+<textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
+<label class="ig-lbl" for="rs">Responder en</label>
+<select class="ig-sel" id="rs"><option value="ambos">Mensajes y comentarios</option><option value="mensajes">Solo mensajes</option><option value="comentarios">Solo comentarios</option></select>
+<div class="ig-msg" id="rMsg"></div>
+<button class="btn-accion" id="addRule" style="width:100%;padding:11px;font-weight:bold">Agregar respuesta</button>
+</div>
+<details class="como"><summary>¿Cómo funciona el bot?</summary>
+<p>Instagram avisa a tu sistema cuando llega un comentario o un mensaje. Si el texto contiene una de tus palabras, el bot responde solo; no importan mayúsculas ni acentos y, si coinciden varias reglas, contesta la primera. Los mensajes solo se pueden responder dentro de las 24 horas siguientes al mensaje de la persona.</p></details>
+</section>
+
+<section id="t-prog" class="oculto">
+<h2 class="card-title">Programar</h2>
+<label class="ig-lbl" for="mkind" style="margin-top:0">Qué quieres publicar</label>
+<select class="ig-sel" id="mkind">
+<option value="post">Publicación (una foto o un reel)</option>
+<option value="story">Story</option>
+<option value="carrusel">Carrusel (2 a 10 fotos o videos)</option>
+</select>
+<label class="ig-lbl" for="mfile">Foto o video</label>
+<input class="ig-in" id="mfile" type="file" accept="image/*,video/*" multiple>
+<div class="chiquito" id="prev" style="margin-top:6px"></div>
+<p class="chiquito" style="margin-top:6px">Las fotos se convierten a JPEG. Los videos funcionan mejor en MP4. Máximo 50 MB por archivo. Las stories no llevan texto.</p>
+<label class="ig-lbl" for="cap">Texto de la publicación</label>
+<textarea class="ig-ta" id="cap" placeholder="Escribe el texto…"></textarea>
+<label class="ig-lbl" for="when">Fecha y hora</label>
+<input class="ig-in" id="when" type="datetime-local">
+<div class="ig-msg" id="pMsg"></div>
+<button class="btn-accion" id="addPost" style="width:100%;padding:11px;font-weight:bold">Programar</button>
+<div class="filas-btn" style="margin-bottom:12px">
+<button class="btn-accion btn-sec mini" id="runNow">Publicar lo vencido ahora</button>
+<button class="btn-accion btn-sec mini" id="reload1">Actualizar</button>
+</div>
+<div id="ig-posts"></div>
+</section>
+
+<section id="t-com" class="oculto">
+<h2 class="card-title">Comentarios</h2>
+<button class="btn-accion btn-sec mini" id="reload2" style="margin-bottom:12px">Actualizar</button>
+<div id="ig-comentarios"></div>
+</section>
+
+<section id="t-msj" class="oculto">
+<h2 class="card-title">Mensajes</h2>
+<p class="ig-sub">Solo puedes responder dentro de las 24 horas siguientes al último mensaje de la persona.</p>
+<button class="btn-accion btn-sec mini" id="reload3" style="margin-bottom:12px">Actualizar</button>
+<div id="ig-mensajes"></div>
+</section>
+
+<section id="t-stats" class="oculto">
+<h2 class="card-title">Estadísticas</h2>
+<button class="btn-accion btn-sec mini" id="loadStats" style="margin-bottom:12px">Cargar estadísticas</button>
+<div class="ig-msg" id="sMsg"></div>
+<div id="ig-stats"></div>
+</section>
+</div>
+</div>
+
+</div>
+</main>
+
+<script>
+(function(){
+const FN = "https://xeongtzcemodcpfdzqws.supabase.co/functions/v1/instagram";
+let pendiente = null;
+try {
+  const q = new URLSearchParams(location.search);
+  if (q.get("ig")) { pendiente = { ok: q.get("ig") === "ok", msg: q.get("msg") || "" }; history.replaceState(null, "", location.pathname); }
+} catch (e) {}
+let KEY = "";
+try { KEY = localStorage.getItem("michihub_ig_key") || ""; } catch (e) {}
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (d) => new Date(d).toLocaleString("es", { dateStyle: "medium", timeStyle: "short" });
+const pad = (n) => String(n).padStart(2, "0");
+const toLocalInput = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const KIND = { IMAGE: "Foto", REELS: "Reel", STORY: "Story", CAROUSEL: "Carrusel" };
+
+async function api(body) {
+  const r = await fetch(FN, { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(body) });
+  let j = {};
+  try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(j.error || ("Error " + r.status));
+  return j;
+}
+function say(id, text, kind) { const el = $(id); el.textContent = text || ""; el.className = "ig-msg " + (kind || ""); }
+function pintarEstado(st) {
+  const con = !!(st && st.connected);
+  $("ig-conectado").classList.toggle("oculto", !con);
+  $("ig-no-conectado").classList.toggle("oculto", con);
+  $("ig-contenido").classList.toggle("oculto", !con);
+  if (con) {
+    $("ig-cuenta").textContent = "@" + st.username;
+    $("ig-estado-txt").textContent = st.expires_at ? "Conectado · hasta el " + new Date(st.expires_at).toLocaleDateString("es", { day: "numeric", month: "short" }) : "Conectado";
+  }
+}
+
+async function load() {
+  const st = await api({ action: "status" });
+  pintarEstado(st);
+  if (!st.connected) return;
+  const d = await api({ action: "list" });
+  renderPosts(d.posts); renderComments(d.comments); renderMessages(d.messages); renderRules(d.rules || []);
+}
+
+function renderRules(list) {
+  $("ig-reglas").innerHTML = list.length ? list.map((r) => `
+    <div class="item"><div class="fila">
+      <div class="info">
+        <div class="titulo">${esc(r.keyword)}</div>
+        <div class="desc">${esc(r.reply)}</div>
+        <div class="chiquito">${esc(r.scope)}</div>
+        <div class="filas-btn" style="margin-top:8px"><button class="btn-accion btn-peligro mini" data-dr="${r.id}">Eliminar</button></div>
+      </div>
+      <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
+    </div></div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas.</p>';
+}
+function renderPosts(list) {
+  $("ig-posts").innerHTML = list.length ? list.map((p) => {
+    const items = Array.isArray(p.items) && p.items.length ? p.items : [{ url: p.media_url, type: p.media_type === "REELS" ? "VIDEO" : "IMAGE" }];
+    const first = items[0];
+    const thumb = first.type === "IMAGE" ? `<img class="miniatura" src="${esc(first.url)}" alt="">` : `<div class="vid">Video</div>`;
+    const editable = ["pendiente", "error"].includes(p.status);
+    const label = (KIND[p.media_type] || p.media_type) + (p.media_type === "CAROUSEL" ? " (" + items.length + ")" : "");
+    return `
+    <div class="item">
+      <div class="fila" style="align-items:flex-start">
+        ${thumb}
+        <div class="info">
+          <span class="etiqueta e-${esc(p.status)}">${esc(p.status)}</span>
+          <div class="chiquito">${esc(fmt(p.scheduled_at))} · ${esc(label)}</div>
+          <div class="desc">${esc((p.caption || "").slice(0, 120))}</div>
+          ${p.error ? `<div class="chiquito" style="color:#b5564a">${esc(p.error)}</div>` : ""}
+        </div>
+      </div>
+      ${editable ? `
+      <div class="filas-btn">
+        <button class="btn-accion btn-sec mini" data-ed="${p.id}">Editar</button>
+        ${p.status === "error" ? `<button class="btn-accion btn-sec mini" data-rt="${p.id}">Reintentar</button>` : ""}
+        <button class="btn-accion btn-peligro mini" data-del="${p.id}">Eliminar</button>
+      </div>
+      <div class="oculto" id="ed-${p.id}" style="margin-top:10px">
+        <label class="ig-lbl">Texto</label>
+        <textarea class="ig-ta" id="edc-${p.id}">${esc(p.caption || "")}</textarea>
+        <label class="ig-lbl">Fecha y hora</label>
+        <input class="ig-in" type="datetime-local" id="edw-${p.id}" value="${toLocalInput(p.scheduled_at)}">
+        <div class="filas-btn">
+          <button class="btn-accion mini" data-sv="${p.id}" data-st="${esc(p.status)}">Guardar</button>
+          <button class="btn-accion btn-sec mini" data-cx="${p.id}">Cancelar</button>
+        </div>
+      </div>` : ""}
+    </div>`;
+  }).join("") : '<p class="chiquito">Todavía no hay publicaciones programadas.</p>';
+}
+function renderComments(list) {
+  $("ig-comentarios").innerHTML = list.length ? list.map((c) => `
+    <div class="item">
+      <div class="titulo">@${esc(c.username || "usuario")} <span class="chiquito">${esc(fmt(c.created_at))}</span></div>
+      <div class="desc" style="font-size:.92rem;opacity:1">${esc(c.text)}</div>
+      ${c.replied ? `<div class="burbuja b-out">${esc(c.reply_text)}</div>` : `
+        <textarea class="ig-ta" id="rc-${esc(c.ig_comment_id)}" placeholder="Tu respuesta…" style="margin-top:8px"></textarea>
+        <div class="filas-btn"><button class="btn-accion mini" data-rc="${esc(c.ig_comment_id)}">Responder</button></div>`}
+    </div>`).join("") : '<p class="chiquito">Aún no hay comentarios.</p>';
+}
+function renderMessages(list) {
+  const by = {};
+  list.slice().reverse().forEach((m) => { (by[m.sender_id] = by[m.sender_id] || []).push(m); });
+  const ids = Object.keys(by);
+  $("ig-mensajes").innerHTML = ids.length ? ids.map((id) => `
+    <div class="item">
+      <div class="chiquito">Conversación con ${esc(id)}</div>
+      ${by[id].map((m) => `<div class="burbuja ${m.direction === "out" ? "b-out" : "b-in"}">${esc(m.text)}</div>`).join("")}
+      <textarea class="ig-ta" id="rm-${esc(id)}" placeholder="Tu respuesta…" style="margin-top:8px"></textarea>
+      <div class="filas-btn"><button class="btn-accion mini" data-rm="${esc(id)}">Enviar</button></div>
+    </div>`).join("") : '<p class="chiquito">Aún no hay mensajes.</p>';
+}
+function renderStats(d) {
+  const p = d.profile || {};
+  const media = (d.media || []).map((m) => {
+    const i = m.insights || {};
+    const score = i.reach != null ? i.reach : (m.like_count || 0) + (m.comments_count || 0);
+    return { ...m, score };
+  });
+  const best = media.length ? media.reduce((a, b) => (b.score > a.score ? b : a)) : null;
+  let html = `<div class="grid3">
+    <div class="dato"><b>${esc(p.followers_count ?? "–")}</b><span>Seguidores</span></div>
+    <div class="dato"><b>${esc(p.follows_count ?? "–")}</b><span>Siguiendo</span></div>
+    <div class="dato"><b>${esc(p.media_count ?? "–")}</b><span>Publicaciones</span></div>
+  </div>
+  <div class="item"><b>${esc(d.reach7 ?? "–")}</b> <span class="chiquito">cuentas alcanzadas en los últimos 7 días</span>${d.reach_error ? `<div class="chiquito" style="color:#b5564a">${esc(d.reach_error)}</div>` : ""}</div>`;
+  html += media.length ? media.map((m) => {
+    const i = m.insights || {};
+    const img = m.thumbnail_url || (m.media_type === "IMAGE" || m.media_type === "CAROUSEL_ALBUM" ? m.media_url : "");
+    return `<div class="item"><div class="fila" style="align-items:flex-start">
+      ${img ? `<img class="miniatura" src="${esc(img)}" alt="">` : `<div class="vid">Video</div>`}
+      <div class="info">
+        ${best && m.id === best.id && m.score > 0 ? '<span class="etiqueta e-top">Mejor</span> ' : ""}
+        <span class="chiquito">${esc(fmt(m.timestamp))}</span>
+        <div class="desc">${esc((m.caption || "").slice(0, 80))}</div>
+        <div class="chiquito">Me gusta ${esc(m.like_count ?? 0)} · Comentarios ${esc(m.comments_count ?? 0)}${i.reach != null ? " · Alcance " + esc(i.reach) : ""}${i.views != null ? " · Vistas " + esc(i.views) : ""}${i.saved != null ? " · Guardados " + esc(i.saved) : ""}${i.shares != null ? " · Compartidos " + esc(i.shares) : ""}</div>
+        ${m.permalink ? `<a class="chiquito" href="${esc(m.permalink)}" target="_blank" rel="noopener">Ver en Instagram</a>` : ""}
+      </div></div></div>`;
+  }).join("") : '<p class="chiquito">No se encontraron publicaciones.</p>';
+  $("ig-stats").innerHTML = html;
+}
+
+async function toJpeg(file) {
+  const bmp = await createImageBitmap(file);
+  const c = document.createElement("canvas"); c.width = bmp.width; c.height = bmp.height;
+  c.getContext("2d").drawImage(bmp, 0, 0);
+  return await new Promise((res, rej) => c.toBlob((b) => b ? res(b) : rej(new Error("No se pudo convertir la foto")), "image/jpeg", 0.92));
+}
+async function uploadOne(f) {
+  const isVideo = f.type.startsWith("video/");
+  let blob = f, ext = (f.name.split(".").pop() || "bin");
+  if (!isVideo) { blob = await toJpeg(f); ext = "jpg"; }
+  if (blob.size > 50 * 1048576) throw new Error(f.name + " pesa más de 50 MB.");
+  const u = await api({ action: "upload_url", ext });
+  const fd = new FormData(); fd.append("cacheControl", "3600"); fd.append("", blob, "file." + ext);
+  const up = await fetch(u.signedUrl, { method: "PUT", body: fd });
+  if (!up.ok) throw new Error("No se pudo subir " + f.name + " (" + up.status + ")");
+  return { url: u.public_url, type: isVideo ? "VIDEO" : "IMAGE" };
+}
+
+$("ig-entrar").onclick = async () => {
+  KEY = $("ig-clave").value.trim();
+  if (!KEY) return say("ig-login-msg", "Escribe la clave.", "err");
+  say("ig-login-msg", "Entrando…");
+  try {
+    await load();
+    if ($("ig-recordar").checked) { try { localStorage.setItem("michihub_ig_key", KEY); } catch (e) {} }
+    $("ig-login").classList.add("oculto"); $("ig-app").classList.remove("oculto");
+    if (pendiente) { say("ig-con-msg", pendiente.ok ? "Instagram conectado." : "No se pudo conectar: " + (pendiente.msg || "intenta de nuevo."), pendiente.ok ? "ok" : "err"); pendiente = null; }
+  } catch (e) { say("ig-login-msg", e.message === "no autorizado" ? "Clave incorrecta." : e.message, "err"); }
+};
+const salir = () => { try { localStorage.removeItem("michihub_ig_key"); } catch (e) {} location.reload(); };
+$("ig-salir").onclick = salir; $("ig-salir2").onclick = salir;
+async function conectar() {
+  say("ig-con-msg", "Abriendo Instagram…");
+  try { const r = await api({ action: "oauth_url" }); location.href = r.url; } catch (e) { say("ig-con-msg", e.message, "err"); }
+}
+$("ig-conectar").onclick = conectar;
+$("ig-reconectar").onclick = conectar;
+$("ig-desconectar").onclick = async () => {
+  if (!confirm("¿Desconectar esta cuenta de Instagram? Se detienen las respuestas automáticas y las publicaciones programadas.")) return;
+  try { await api({ action: "disconnect" }); await load(); } catch (e) { say("ig-con-msg", e.message, "err"); }
+};
+document.querySelectorAll("#ig-tabs button").forEach((b) => b.onclick = () => {
+  document.querySelectorAll("#ig-tabs button").forEach((x) => x.classList.toggle("activo", x === b));
+  ["auto", "prog", "com", "msj", "stats"].forEach((t) => $("t-" + t).classList.toggle("oculto", t !== b.dataset.t));
+});
+["reload1", "reload2", "reload3"].forEach((id) => $(id).onclick = () => load().catch((e) => alert(e.message)));
+$("runNow").onclick = async () => { try { await api({ action: "publish_due" }); say("pMsg", "Revisando publicaciones vencidas. Toca Actualizar en unos segundos.", "ok"); } catch (e) { alert(e.message); } };
+$("mfile").onchange = () => {
+  const fs = [...$("mfile").files];
+  $("prev").textContent = fs.length ? fs.map((f) => f.name + " (" + (f.size / 1048576).toFixed(1) + " MB)").join(", ") : "";
+};
+$("mkind").onchange = () => { $("cap").disabled = $("mkind").value === "story"; };
+$("addPost").onclick = async () => {
+  const files = [...$("mfile").files], when = $("when").value, kind = $("mkind").value;
+  if (!files.length || !when) return say("pMsg", "Elige archivos y la fecha.", "err");
+  if (kind === "carrusel" && (files.length < 2 || files.length > 10)) return say("pMsg", "Un carrusel necesita de 2 a 10 archivos.", "err");
+  if (kind !== "carrusel" && files.length !== 1) return say("pMsg", "Elige un solo archivo, o cambia a Carrusel.", "err");
+  const btn = $("addPost"); btn.disabled = true;
+  try {
+    const items = [];
+    for (let i = 0; i < files.length; i++) { say("pMsg", "Subiendo " + (i + 1) + " de " + files.length + "…"); items.push(await uploadOne(files[i])); }
+    const media_type = kind === "story" ? "STORY" : kind === "carrusel" ? "CAROUSEL" : (items[0].type === "VIDEO" ? "REELS" : "IMAGE");
+    await api({ action: "add_post", media_url: items[0].url, media_type, items, caption: kind === "story" ? "" : $("cap").value, scheduled_at: new Date(when).toISOString() });
+    say("pMsg", "Programada.", "ok"); $("mfile").value = ""; $("prev").textContent = ""; $("cap").value = ""; await load();
+  } catch (e) { say("pMsg", e.message, "err"); }
+  btn.disabled = false;
+};
+$("addRule").onclick = async () => {
+  const k = $("rk").value.trim(), r = $("rr").value.trim();
+  if (!k || !r) return say("rMsg", "Escribe la palabra y la respuesta.", "err");
+  try {
+    await api({ action: "add_rule", keyword: k, reply: r, scope: $("rs").value });
+    say("rMsg", "Respuesta agregada.", "ok"); $("rk").value = ""; $("rr").value = ""; await load();
+  } catch (e) { say("rMsg", e.message, "err"); }
+};
+$("loadStats").onclick = async () => {
+  say("sMsg", "Cargando…");
+  try { renderStats(await api({ action: "stats" })); say("sMsg", ""); } catch (e) { say("sMsg", e.message, "err"); }
+};
+document.body.addEventListener("change", async (ev) => {
+  const t = ev.target;
+  if (t.dataset && t.dataset.tg) {
+    try { await api({ action: "toggle_rule", id: Number(t.dataset.tg), active: t.checked }); } catch (e) { alert(e.message); t.checked = !t.checked; }
+  }
+});
+document.body.addEventListener("click", async (ev) => {
+  const t = ev.target;
+  if (!t.dataset) return;
+  try {
+    if (t.dataset.ed) $("ed-" + t.dataset.ed).classList.toggle("oculto");
+    if (t.dataset.cx) $("ed-" + t.dataset.cx).classList.add("oculto");
+    if (t.dataset.sv) {
+      const id = t.dataset.sv;
+      await api({ action: "update_post", id: Number(id), caption: $("edc-" + id).value, scheduled_at: new Date($("edw-" + id).value).toISOString(), reset: t.dataset.st === "error" });
+      await load();
+    }
+    if (t.dataset.rt) { await api({ action: "update_post", id: Number(t.dataset.rt), reset: true }); await load(); }
+    if (t.dataset.dr) { if (confirm("¿Eliminar esta respuesta automática?")) { await api({ action: "delete_rule", id: Number(t.dataset.dr) }); await load(); } }
+    if (t.dataset.del) { if (confirm("¿Eliminar esta publicación?")) { await api({ action: "delete_post", id: Number(t.dataset.del) }); await load(); } }
+    if (t.dataset.rc) { const txt = $("rc-" + t.dataset.rc).value.trim(); if (txt) { await api({ action: "reply_comment", comment_id: t.dataset.rc, text: txt }); await load(); } }
+    if (t.dataset.rm) { const txt = $("rm-" + t.dataset.rm).value.trim(); if (txt) { await api({ action: "send_message", recipient_id: t.dataset.rm, text: txt }); await load(); } }
+  } catch (e) { alert(e.message); }
+});
+
+if (KEY) { $("ig-clave").value = KEY; $("ig-recordar").checked = true; $("ig-entrar").click(); }
+})();
+</script>
+<script>
+/* PANTALLA DE CARGA */
+let loadingTimeoutId = null;
+
+function mostrarPantallaCarga(){
+    let loading = document.getElementById("loading-screen");
+    if(!loading) return;
+
+    clearTimeout(loadingTimeoutId);
+    loading.classList.remove("fade-out");
+
+    loadingTimeoutId = setTimeout(() => {
+        loading.classList.add("fade-out");
+    }, 1400);
+}
+
+window.addEventListener("load", mostrarPantallaCarga);
+window.addEventListener("pageshow", (e) => {
+    if(e.persisted) mostrarPantallaCarga();
+});
+document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible") mostrarPantallaCarga();
+});
+mostrarPantallaCarga();
+</script>
+
+<script>
+/* Retomar música en segundo plano si estaba sonando en la página anterior */
+(function retomarMusicaSiEstabaSonando(){
+    const musicaSync = document.getElementById("bg-music-sync");
+    if(localStorage.getItem("michihubMusicaEstado") !== "reproduciendo") return;
+
+    musicaSync.play().catch(() => {
+        const reanudarConToque = () => {
+            if(localStorage.getItem("michihubMusicaEstado") === "reproduciendo"){
+                musicaSync.play().catch(() => {});
+            }
+            document.removeEventListener("click", reanudarConToque);
+            document.removeEventListener("touchstart", reanudarConToque);
+        };
+        document.addEventListener("click", reanudarConToque, { once: true });
+        document.addEventListener("touchstart", reanudarConToque, { once: true });
+    });
+})();
+
+/* PWA: manifest + ícono + service worker */
+function configurarPWA(){
+    let linkApple = document.createElement("link");
+    linkApple.rel = "apple-touch-icon";
+    linkApple.href = "icon-192.png";
+    document.head.appendChild(linkApple);
+
+    let metaTheme = document.createElement("meta");
+    metaTheme.name = "theme-color";
+    metaTheme.content = "#b09e8d";
+    document.head.appendChild(metaTheme);
+
+    let linkManifest = document.createElement("link");
+    linkManifest.rel = "manifest";
+    linkManifest.href = "manifest.json";
+    document.head.appendChild(linkManifest);
+
+    if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+        navigator.serviceWorker.register("service-worker.js")
+            .catch(err => console.log("No se pudo registrar el service worker:", err));
+    }
+}
+configurarPWA();
+</script>
+<script src="offline.js" defer></script>
+
+</body>
+</html>
