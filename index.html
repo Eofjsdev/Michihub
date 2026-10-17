@@ -1941,9 +1941,9 @@ function buscarID(){
 /* RENDERIZADO DE RESULTADO + ACCIONES (regenerar / eliminar) */
 function mostrarResultadoCredencial(nombre, data, mensajeExtra){
     let resultado = document.getElementById("resultado-id");
-    const imgSegura = urlImagenSegura(data.img);
+    const imgSegura = urlImagenSegura(data.img); const insigniaVerificada = esPerfilFundador(nombre) ? `<span class="insignia-verificado" role="status" aria-label="Cuenta fundadora verificada por MichiHub" title="Cuenta fundadora verificada por MichiHub"><span class="insignia-verificado-check" aria-hidden="true">✓</span> Verificado</span>` : "";
     resultado.innerHTML = `
-        ${imgSegura ? `<img src="${imgSegura}" class="id-image">` : ""}
+        <div class="perfil-identidad"><strong class="perfil-nombre">${escaparHTML(nombre)}</strong>${insigniaVerificada}</div>${imgSegura ? `<img src="${imgSegura}" class="id-image">` : ""}
         <p style="font-size:1.1rem;font-weight:bold;color:#b09e8d;margin:10px 0;">✨ Credencial asegurada con éxito</p>
         ${data.fecha ? `<p>📅 Creado: ${escaparHTML(data.fecha)}${data.hora ? " - " + escaparHTML(data.hora) : ""}</p>` : ""}
         ${data.ubicacion ? `<p>📍 Ubicación: ${escaparHTML(data.ubicacion)}</p>` : ""}
