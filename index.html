@@ -245,7 +245,7 @@ main{
 
 /* RESULTADO */
 #resultado-id{text-align:center;min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.id-image{max-width:100%;margin-bottom:10px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.id-image{max-width:100%;margin-bottom:10px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.1)} .perfil-identidad{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;margin:4px 0 10px} .perfil-nombre{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--text-main)} .insignia-verificado{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid rgba(176,158,141,.65);border-radius:999px;background:linear-gradient(135deg,#fffaf3,#e9dfd2);color:#4a4238;font-size:.82rem;font-weight:800;box-shadow:0 3px 9px var(--shadow)} .insignia-verificado-check{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#b09e8d;color:#fff;font-size:12px;line-height:1}
 
 .credencial-acciones{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
 .btn-accion{padding:8px 20px;border:none;border-radius:20px;background:var(--accent);color:white;cursor:pointer;font-size:0.9rem}
@@ -1196,7 +1196,7 @@ async function obtenerDatosSocio(correo){
 
 // Correos del fundador/CEO de MichiHub: siempre obtienen el rango especial,
 // sin importar cuándo se registraron.
-const CORREOS_FUNDADOR = ["cruzangelsaid34@gmail.com", "centermeow@gmail.com"];
+const CORREOS_FUNDADOR = ["cruzangelsaid34@gmail.com", "centermeow@gmail.com"];  function esPerfilFundador(nombre){     const correo = (localStorage.getItem("michihubEmail") || "").trim().toLowerCase();     const nombreCuenta = (localStorage.getItem("michihubNombre") || "").trim().toLocaleLowerCase("es-MX");     const nombreConsultado = String(nombre || "").trim().toLocaleLowerCase("es-MX");     return CORREOS_FUNDADOR.includes(correo) && !!nombreCuenta && nombreCuenta === nombreConsultado; }
 
 // Rango honorífico según cuánto tiempo lleva alguien como socio de MichiHub
 // Niveles de MichiHub: el logo (🐾) + un emoji distinto por nivel.
@@ -1632,7 +1632,7 @@ async function subirReadmePersonalizado(providerToken, usuarioGH, nombreRepo, no
     const fechaBadge = new Date().toISOString().slice(0, 10).replace(/-/g, "--");
 
     const badges =
-        "[![Hecho con MichiHub](https://img.shields.io/badge/Hecho_con-MichiHub-b09e8d?style=for-the-badge&logo=cachet&logoColor=white)](https://cruzangelsaid34.github.io/Michihub/) " +
+        "[![Hecho con MichiHub](https://img.shields.io/badge/Hecho_con-MichiHub-b09e8d?style=for-the-badge&logo=cachet&logoColor=white)](https://eofjsdev.github.io/Michihub/) " +
         "![Creado](https://img.shields.io/badge/Creado-" + fechaBadge + "-4a4238?style=for-the-badge)" +
         (rango ? " ![Rango](https://img.shields.io/badge/Rango-" + encodeURIComponent(rango.titulo.replace(/ /g, "_")) + "-8a5a34?style=for-the-badge)" : "") +
         "\n\n";
@@ -1699,7 +1699,7 @@ async function crearRepoGitHubAutomatico(providerToken, usuarioGH, nombre, fotoU
             body: JSON.stringify({
                 name: nombreRepo,
                 description: "🐾 Tu rincón en MichiHub: bienvenida, certificado de membresía y rango. Creado automáticamente al iniciar sesión. Donde cada michi encuentra su lugar 💙",
-                homepage: "https://cruzangelsaid34.github.io/Michihub/",
+                homepage: "https://eofjsdev.github.io/Michihub/",
                 private: false
             })
         });
