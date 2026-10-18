@@ -248,6 +248,7 @@ details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
 <div class="info" style="flex:1;min-width:0">
 <div class="ig-nombre" id="ig-cuenta">@cuenta</div>
 <div class="ig-estado"><i class="ig-punto"></i><span id="ig-estado-txt">Conectado</span></div>
+<div class="chiquito" id="ig-cuenta-cd" style="margin-top:2px"></div>
 </div>
 <button class="btn-accion btn-sec mini" id="ig-desconectar">Desconectar</button>
 </div>
@@ -371,6 +372,25 @@ async function api(body) {
   return j;
 }
 function say(id, text, kind) { const el = $(id); el.textContent = text || ""; el.className = "ig-msg " + (kind || ""); }
+let cdTimer = null;
+function cuentaRegresiva(iso, source) {
+  clearInterval(cdTimer);
+  const el = $("ig-cuenta-cd");
+  el.style.color = "";
+  if (!iso) { el.textContent = "Conexión manual, sin fecha de vencimiento. Toca Reconectar cuenta para que se renueve sola."; return; }
+  const fin = new Date(iso).getTime();
+  const tick = () => {
+    let s = Math.floor((fin - Date.now()) / 1000);
+    if (s <= 0) { el.textContent = "El token venció. Toca Reconectar cuenta."; el.style.color = "#b5564a"; clearInterval(cdTimer); return; }
+    const d = Math.floor(s / 86400); s %= 86400;
+    const h = Math.floor(s / 3600); s %= 3600;
+    const m = Math.floor(s / 60); s %= 60;
+    el.textContent = "Vence en " + d + "d " + pad(h) + "h " + pad(m) + "m " + pad(s) + "s" + (source === "oauth" ? " · se renueva sola" : "");
+    el.style.color = d < 7 ? "#b08a3a" : "";
+  };
+  tick();
+  cdTimer = setInterval(tick, 1000);
+}
 function pintarEstado(st) {
   const con = !!(st && st.connected);
   $("ig-conectado").classList.toggle("oculto", !con);
@@ -378,7 +398,8 @@ function pintarEstado(st) {
   $("ig-contenido").classList.toggle("oculto", !con);
   if (con) {
     $("ig-cuenta").textContent = "@" + st.username;
-    $("ig-estado-txt").textContent = st.expires_at ? "Conectado · hasta el " + new Date(st.expires_at).toLocaleDateString("es", { day: "numeric", month: "short" }) : "Conectado";
+    $("ig-estado-txt").textContent = "Conectado";
+    cuentaRegresiva(st.expires_at, st.source);
   }
 }
 
@@ -402,8 +423,12 @@ function renderRules(list) {
       <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
     </div></div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas.</p>';
 }
-function renderPosts(list) {
-  $("ig-posts").innerHTML = list.length ? list.map((p) => {
+let verPublicadas = false, ultimosPosts = [];
+function renderPosts(all) {
+  ultimosPosts = all;
+  const publicadas = all.filter((p) => p.status === "publicado");
+  const list = verPublicadas ? all : all.filter((p) => p.status !== "publicado");
+  $("ig-posts").innerHTML = (list.length ? list.map((p) => {
     const items = Array.isArray(p.items) && p.items.length ? p.items : [{ url: p.media_url, type: p.media_type === "REELS" ? "VIDEO" : "IMAGE" }];
     const first = items[0];
     const thumb = first.type === "IMAGE" ? `<img class="miniatura" src="${esc(first.url)}" alt="">` : `<div class="vid">Video</div>`;
@@ -437,7 +462,7 @@ function renderPosts(list) {
         </div>
       </div>` : ""}
     </div>`;
-  }).join("") : '<p class="chiquito">Todavía no hay publicaciones programadas.</p>';
+  }).join("") : '<p class="chiquito">No hay publicaciones pendientes.</p>') + (publicadas.length ? `<button class="btn-accion btn-sec mini" data-vp="1">${verPublicadas ? "Ocultar publicadas" : "Ver publicadas (" + publicadas.length + ")"}</button>` : "");
 }
 function renderComments(list) {
   $("ig-comentarios").innerHTML = list.length ? list.map((c) => `
@@ -580,6 +605,7 @@ document.body.addEventListener("click", async (ev) => {
   const t = ev.target;
   if (!t.dataset) return;
   try {
+    if (t.dataset.vp) { verPublicadas = !verPublicadas; renderPosts(ultimosPosts); }
     if (t.dataset.ed) $("ed-" + t.dataset.ed).classList.toggle("oculto");
     if (t.dataset.cx) $("ed-" + t.dataset.cx).classList.add("oculto");
     if (t.dataset.sv) {
