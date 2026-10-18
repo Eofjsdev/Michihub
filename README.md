@@ -18,6 +18,16 @@ El acceso público a este repositorio o a la página de MichiHub no constituye u
 
 Para consultar los permisos aplicables, revisa el archivo [LICENSE](LICENSE). Las versiones anteriores que hayan sido publicadas bajo otra licencia conservan las condiciones de esa licencia.
 
+## Conexión con Instagram
+
+La sección de Instagram está diseñada para conectarse a cuentas profesionales mediante el flujo de autorización OAuth de Meta y la API de Instagram. La autorización se completa en el sitio oficial de Instagram/Meta; MichiHub no solicita la contraseña de Instagram en el formulario de su propia página.
+
+El campo «Pega tu clave» del panel solicita una clave independiente para acceder a las herramientas de administración; no es la contraseña de Instagram. No la compartas ni la publiques. Antes de autorizar, revisa los permisos que Meta muestra y concede solo los que aceptes. El acceso puede revocarse desde la configuración de aplicaciones autorizadas de Instagram/Meta.
+
+La disponibilidad y seguridad de la conexión dependen de que la aplicación de Meta y el backend estén configurados correctamente; el uso de una API por sí solo no garantiza seguridad absoluta. Si Meta muestra un error de autorización, no continúes hasta que se corrija.
+
+[📷 Abrir la sección Instagram](https://eofjsdev.github.io/Michihub/Instagram.html)
+
 ## Sitio oficial
 
 [Visitar MichiHub](https://eofjsdev.github.io/Michihub/)
