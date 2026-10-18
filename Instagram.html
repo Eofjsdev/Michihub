@@ -282,6 +282,8 @@ details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
 <section id="t-auto">
 <h2 class="card-title">Respuestas automáticas</h2>
 <p class="ig-sub">Cuando alguien comenta o escribe una de tus palabras, el bot contesta por ti. Escribe {usuario} y se cambia por el @ de la persona.</p>
+<div class="filas-btn" style="margin:0 0 6px"><button class="btn-accion btn-sec mini" id="ig-poll">Revisar mensajes y comentarios ahora</button></div>
+<div class="ig-msg" id="ig-poll-msg"></div>
 <div id="ig-reglas"></div>
 <div class="item" id="ig-form-regla">
 <label class="ig-lbl" for="rk" style="margin-top:0">Palabra o palabras (separadas por comas)</label>
@@ -590,6 +592,16 @@ $("addRule").onclick = async () => {
     await api({ action: "add_rule", keyword: k, reply: r, scope: $("rs").value });
     say("rMsg", "Respuesta agregada.", "ok"); $("rk").value = ""; $("rr").value = ""; await load();
   } catch (e) { say("rMsg", e.message, "err"); }
+};
+$("ig-poll").onclick = async () => {
+  say("ig-poll-msg", "Revisando…");
+  try {
+    const r = await api({ action: "poll" });
+    const base = "Mensajes de los últimos 15 min: " + (r.mensajes_recientes ?? 0) + " · Comentarios: " + (r.comentarios_recientes ?? 0) + ".";
+    if (r.errores && r.errores.length) say("ig-poll-msg", base + " Avisos: " + r.errores.join(" | "), "err");
+    else say("ig-poll-msg", base + " Si hay una regla que coincide, ya se respondió.", "ok");
+    await load();
+  } catch (e) { say("ig-poll-msg", e.message, "err"); }
 };
 $("loadStats").onclick = async () => {
   say("sMsg", "Cargando…");
