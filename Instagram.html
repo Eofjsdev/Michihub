@@ -428,8 +428,8 @@ function renderRules(list) {
 let verPublicadas = false, ultimosPosts = [];
 function renderPosts(all) {
   ultimosPosts = all;
-  const publicadas = all.filter((p) => p.status === "publicado");
-  const list = verPublicadas ? all : all.filter((p) => p.status !== "publicado");
+  const publicadas = [];
+  const list = all.filter((p) => p.status !== "publicado");
   $("ig-posts").innerHTML = (list.length ? list.map((p) => {
     const items = Array.isArray(p.items) && p.items.length ? p.items : [{ url: p.media_url, type: p.media_type === "REELS" ? "VIDEO" : "IMAGE" }];
     const first = items[0];
