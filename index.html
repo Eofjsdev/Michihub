@@ -375,37 +375,141 @@ main{
 #welcome-screen{
     position:fixed;
     inset:0;
-    background-color:var(--bg-base);
-    background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    z-index:10000;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:18px;
-    z-index:10000;
+    gap:0;
     text-align:center;
-    padding:20px;
-    transition:opacity 0.4s ease;
+    padding:24px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,.75) 0, rgba(255,255,255,0) 45%),
+        radial-gradient(circle at 85% 90%, rgba(176,158,141,.35) 0, rgba(176,158,141,0) 50%),
+        var(--bg-base);
+    background-image:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,.75) 0, rgba(255,255,255,0) 45%),
+        radial-gradient(circle at 85% 90%, rgba(176,158,141,.35) 0, rgba(176,158,141,0) 50%),
+        url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    transition:opacity .55s ease, transform .55s ease;
 }
 #welcome-screen.fade-out{
     opacity:0;
+    transform:scale(1.04);
     pointer-events:none;
 }
-#welcome-screen img{
-    width:80px;
-    height:80px;
+/* huellitas flotando de fondo */
+#welcome-screen .w-paws{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#welcome-screen .w-paws i{
+    position:absolute;
+    bottom:-40px;
+    font-style:normal;
+    font-size:1.6rem;
+    opacity:0;
+}
+#welcome-screen.run .w-paws i{animation:w-subir 6s ease-in infinite}
+#welcome-screen .w-paws i:nth-child(1){left:8%;animation-delay:.2s;font-size:1.3rem}
+#welcome-screen .w-paws i:nth-child(2){left:24%;animation-delay:1.4s;font-size:1.9rem}
+#welcome-screen .w-paws i:nth-child(3){left:42%;animation-delay:.7s;font-size:1.2rem}
+#welcome-screen .w-paws i:nth-child(4){left:60%;animation-delay:2.1s;font-size:1.7rem}
+#welcome-screen .w-paws i:nth-child(5){left:78%;animation-delay:1s;font-size:1.4rem}
+#welcome-screen .w-paws i:nth-child(6){left:91%;animation-delay:2.6s;font-size:1.1rem}
+@keyframes w-subir{
+    0%{transform:translateY(0) rotate(-12deg);opacity:0}
+    15%{opacity:.35}
+    100%{transform:translateY(-105vh) rotate(14deg);opacity:0}
+}
+/* logo con ondas */
+#welcome-screen .w-logo{
+    position:relative;
+    width:112px;height:112px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:26px;
+    opacity:0;
+}
+#welcome-screen.run .w-logo{animation:w-pop .8s cubic-bezier(.2,1.4,.4,1) .1s forwards}
+#welcome-screen .w-logo img{
+    position:relative;z-index:2;
+    width:100%;height:100%;
     border-radius:50%;
     clip-path:circle(50%);
-    box-shadow:0 8px 20px var(--shadow);
+    box-shadow:0 12px 30px var(--shadow);
 }
+#welcome-screen .w-logo b{
+    position:absolute;inset:0;
+    border-radius:50%;
+    border:2px solid var(--accent);
+    opacity:0;
+}
+#welcome-screen.run .w-logo b{animation:w-onda 2.4s ease-out .7s infinite}
+#welcome-screen.run .w-logo b:nth-child(2){animation-delay:1.5s}
+@keyframes w-pop{
+    0%{opacity:0;transform:scale(.4) rotate(-12deg)}
+    100%{opacity:1;transform:scale(1) rotate(0)}
+}
+@keyframes w-onda{
+    0%{opacity:.7;transform:scale(1)}
+    100%{opacity:0;transform:scale(2.1)}
+}
+/* saludo */
+#welcome-screen .w-saludo{
+    font-size:.78rem;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:6px;
+    opacity:0;
+}
+#welcome-screen.run .w-saludo{animation:w-sube .6s ease .5s forwards}
+/* titulo letra por letra */
 #welcome-screen h1{
     font-family:'Playfair Display',serif;
-    font-size:2.2rem;
+    font-size:clamp(2.4rem,11vw,3.4rem);
+    color:var(--text-main);
+    line-height:1.1;
+    display:flex;
+}
+#welcome-screen h1 span{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(18px);
+}
+#welcome-screen.run h1 span{animation:w-letra .55s cubic-bezier(.2,1.2,.4,1) forwards}
+#welcome-screen h1 span:nth-child(1){animation-delay:.70s}
+#welcome-screen h1 span:nth-child(2){animation-delay:.77s}
+#welcome-screen h1 span:nth-child(3){animation-delay:.84s}
+#welcome-screen h1 span:nth-child(4){animation-delay:.91s}
+#welcome-screen h1 span:nth-child(5){animation-delay:.98s}
+#welcome-screen h1 span:nth-child(6){animation-delay:1.05s}
+#welcome-screen h1 span:nth-child(7){animation-delay:1.12s}
+#welcome-screen h1 span:nth-child(8){animation-delay:1.19s}
+@keyframes w-letra{to{opacity:1;transform:translateY(0)}}
+@keyframes w-sube{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+}
+/* linea decorativa */
+#welcome-screen .w-linea{
+    width:0;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    margin:16px 0 14px;
+}
+#welcome-screen.run .w-linea{animation:w-linea .8s ease 1.3s forwards}
+@keyframes w-linea{to{width:min(60vw,220px)}}
+/* frase */
+#welcome-screen p{
+    max-width:300px;
+    min-height:2.6em;
+    opacity:0;
+    font-size:1rem;
     color:var(--text-main);
 }
-#welcome-screen p{
-    max-width:320px;
-    opacity:0.8;
+#welcome-screen.run p{animation:w-sube .6s ease 1.5s forwards}
+@media (prefers-reduced-motion:reduce){
+    #welcome-screen .w-paws{display:none}
+    #welcome-screen *{animation-duration:.01s !important;animation-delay:0s !important;animation-iteration-count:1 !important}
 }
 
 /* PANTALLA DE AGRADECIMIENTO AL INICIAR SESIÓN CON GITHUB */
@@ -612,9 +716,12 @@ body{padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)) !important}
 
 <body>
 
-<div id="welcome-screen">
-<img src="icon-192.png" alt="MichiHub">
-<h1>¡Bienvenido a MichiHub!</h1>
+<div id="welcome-screen" role="status" aria-live="polite">
+<div class="w-paws" aria-hidden="true"><i>🐾</i><i>🐾</i><i>🐾</i><i>🐾</i><i>🐾</i><i>🐾</i></div>
+<div class="w-logo"><b></b><b></b><img src="icon-192.png" alt="MichiHub"></div>
+<div class="w-saludo" id="welcome-saludo">Bienvenido</div>
+<h1 aria-label="MichiHub"><span>M</span><span>i</span><span>c</span><span>h</span><span>i</span><span>H</span><span>u</span><span>b</span></h1>
+<div class="w-linea"></div>
 <p id="welcome-frase">Tu rincón lo-fi para relajarte, chatear y jugar.</p>
 </div>
 
@@ -744,6 +851,11 @@ body{padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)) !important}
 Crear Credencial
 </button>
 
+</div>
+
+<div class="card" id="card-verificar-ig">
+<h2 class="card-title">Verificar Instagram</h2>
+<div id="vig-contenido"><p style="opacity:.7">Cargando...</p></div>
 </div>
 
 <!-- Modal para crear credencial con más campos -->
@@ -878,7 +990,7 @@ const FRASES_BIENVENIDA = [
     "Puliendo las credenciales ✨"
 ];
 
-const ESPERA_BIENVENIDA_MS = 3500; // tiempo que se ve la bienvenida antes de entrar sola
+const ESPERA_BIENVENIDA_MS = 4200; // tiempo que se ve la bienvenida antes de entrar sola
 let bienvenidaTimeoutId = null;
 let bienvenidaOcultaTimeoutId = null;
 
@@ -889,8 +1001,15 @@ function mostrarPantallaBienvenida(){
     if(frase) frase.innerText = FRASES_BIENVENIDA[Math.floor(Math.random() * FRASES_BIENVENIDA.length)];
     clearTimeout(bienvenidaTimeoutId);
     clearTimeout(bienvenidaOcultaTimeoutId);
-    welcome.classList.remove("fade-out");
+    let saludo = document.getElementById("welcome-saludo");
+    if(saludo){
+        let h = new Date().getHours();
+        saludo.innerText = h < 6 ? "Buenas madrugadas" : h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
+    }
+    welcome.classList.remove("fade-out", "run");
     welcome.style.display = "flex";
+    void welcome.offsetWidth; // reinicia las animaciones cada vez que aparece
+    welcome.classList.add("run");
     // Entra automáticamente, sin botón
     bienvenidaTimeoutId = setTimeout(ocultarPantallaBienvenida, ESPERA_BIENVENIDA_MS);
 }
@@ -2033,6 +2152,7 @@ function mostrarResultadoCredencial(nombre, data, mensajeExtra){
         <p style="font-size:1.1rem;font-weight:bold;color:#b09e8d;margin:10px 0;">✨ Credencial asegurada con éxito</p>
         ${data.fecha ? `<p>📅 Creado: ${escaparHTML(data.fecha)}${data.hora ? " - " + escaparHTML(data.hora) : ""}</p>` : ""}
         ${data.ubicacion ? `<p>📍 Ubicación: ${escaparHTML(data.ubicacion)}</p>` : ""}
+        ${localStorage.getItem("michihubIgVerificado") ? `<p>✅ Instagram verificado: <b>@${escaparHTML(localStorage.getItem("michihubIgVerificado"))}</b></p>` : ""}
         ${data.expiracion ? `<p>Válido hasta: <b>${escaparHTML(data.expiracion)}</b></p>` : ""}
         ${mensajeExtra ? `<p>${escaparHTML(mensajeExtra)}</p>` : ""}
         <div class="credencial-acciones">
@@ -3017,5 +3137,92 @@ document.addEventListener("contextmenu", (e) => {
 </script>
 
 <script src="offline.js" defer></script>
+<script>
+/* VERIFICACIÓN DE INSTAGRAM POR CÓDIGO (sin documentos) */
+(function(){
+    const cont = document.getElementById("vig-contenido");
+    if(!cont) return;
+    const btn = "margin-top:10px;width:100%;padding:12px;border:none;border-radius:10px;background:#b09e8d;color:white;cursor:pointer;font-weight:bold;";
+    const btnSec = "margin-top:8px;width:100%;padding:10px;border:none;border-radius:10px;background:#999;color:white;cursor:pointer;";
+    const caja = "margin:12px 0;padding:14px;border-radius:12px;background:rgba(176,158,141,.18);font-size:1.4rem;font-weight:bold;letter-spacing:2px;text-align:center;user-select:all;-webkit-user-select:all;";
+    const correo = () => (localStorage.getItem("michihubEmail") || "").trim().toLowerCase();
+    const msgErr = (e) => /function|schema cache|does not exist/i.test(e && e.message || "")
+        ? "Falta crear las tablas de verificación en Supabase (ejecuta verificaciones_ig.sql)."
+        : ((e && e.message) || "No se pudo completar. Intenta de nuevo.");
+    let ocupado = false;
+
+    function pintar(html){ cont.innerHTML = html; }
+
+    function pintarEstado(est){
+        if(est && est.estado === "verificada"){
+            try{ localStorage.setItem("michihubIgVerificado", est.usuario_ig); }catch(e){}
+            pintar(`<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p>
+                    <p style="text-align:center;margin-top:6px"><b>@${escaparHTML(est.usuario_ig)}</b></p>`);
+            return;
+        }
+        try{ localStorage.removeItem("michihubIgVerificado"); }catch(e){}
+        if(est && est.estado === "pendiente"){
+            pintar(`<p>Verificación de <b>@${escaparHTML(est.usuario_ig)}</b> en revisión.</p>
+                <div style="${caja}">${escaparHTML(est.codigo)}</div>
+                <p style="font-size:.9rem;line-height:1.5">1. Pon este código en tu <b>bio de Instagram</b> o envíalo por <b>mensaje directo</b> a la cuenta oficial de MichiHub.<br>
+                2. Espera a que lo revisemos. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</p>
+                <button style="${btn}" id="vig-revisar">Revisar estado</button>
+                <button style="${btnSec}" id="vig-cambiar">Usar otra cuenta</button>
+                <p id="vig-msg" style="margin-top:8px;font-size:.85rem;opacity:.8"></p>`);
+            document.getElementById("vig-revisar").onclick = () => cargar(true);
+            document.getElementById("vig-cambiar").onclick = () => pintarFormulario();
+            return;
+        }
+        pintarFormulario(est && est.estado === "rechazada"
+            ? "Tu solicitud anterior fue rechazada. Puedes intentarlo de nuevo."
+            : "");
+    }
+
+    function pintarFormulario(aviso){
+        pintar(`<p style="font-size:.9rem;line-height:1.5">Verifica que tu cuenta de Instagram es tuya. No pedimos documentos: solo un código.</p>
+            ${aviso ? `<p style="margin-top:8px;color:#b5564a">${escaparHTML(aviso)}</p>` : ""}
+            <div class="search-box" style="margin-top:12px">
+                <input type="text" id="vig-usuario" placeholder="@tu_usuario" autocapitalize="off" autocomplete="off" maxlength="31">
+            </div>
+            <button style="${btn}" id="vig-generar">Generar código</button>
+            <p id="vig-msg" style="margin-top:8px;font-size:.85rem;color:#b5564a"></p>`);
+        document.getElementById("vig-generar").onclick = solicitar;
+    }
+
+    async function solicitar(){
+        if(ocupado) return;
+        const msg = document.getElementById("vig-msg");
+        const usuario = document.getElementById("vig-usuario").value.trim();
+        if(!usuario){ msg.textContent = "Escribe tu usuario de Instagram."; return; }
+        ocupado = true; msg.style.color = ""; msg.textContent = "Generando...";
+        try{
+            const { data, error } = await supabaseCuentas.rpc("ig_solicitar", { p_correo: correo(), p_usuario_ig: usuario });
+            if(error) throw error;
+            pintarEstado(Array.isArray(data) ? data[0] : data);
+        }catch(e){
+            msg.style.color = "#b5564a"; msg.textContent = msgErr(e);
+        }finally{ ocupado = false; }
+    }
+
+    async function cargar(manual){
+        if(!correo()){ pintar('<p style="opacity:.8">Inicia sesión para verificar tu Instagram.</p>'); return; }
+        try{
+            const { data, error } = await supabaseCuentas.rpc("ig_mi_estado", { p_correo: correo() });
+            if(error) throw error;
+            const est = Array.isArray(data) ? data[0] : data;
+            pintarEstado(est || null);
+            if(manual && est && est.estado === "pendiente"){
+                const m = document.getElementById("vig-msg"); if(m) m.textContent = "Sigue en revisión.";
+            }
+        }catch(e){
+            pintar(`<p style="color:#b5564a;font-size:.9rem">${escaparHTML(msgErr(e))}</p>`);
+        }
+    }
+
+    let ultimo = null;
+    setInterval(() => { const c = correo(); if(c !== ultimo){ ultimo = c; cargar(false); } }, 2000);
+    document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible" && correo() && !ocupado) cargar(false); });
+})();
+</script>
 </body>
 </html>
