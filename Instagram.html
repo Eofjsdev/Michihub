@@ -70,7 +70,7 @@ nav.menu-principal{
     gap:0;
     flex-wrap:nowrap;
     padding:6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-    background:var(--card-bg);
+    background:var(--bg-base);
     border-top:1px solid rgba(74,66,56,0.15);
     box-shadow:0 -4px 14px var(--shadow);
     overflow:visible;
@@ -761,7 +761,7 @@ document.body.addEventListener("click", async (ev) => {
     if (!r.ok) throw new Error((j && (j.message || j.error)) || ("Error " + r.status));
     return j;
   }
-  const clave = () => $("ver-clave").value;
+  const clave = () => $("ver-clave").value.trim();
   function pintarVer(){
     $("ver-lista").innerHTML = pend.length ? pend.map((p) => {
       const hit = dms.find((m) => String(m.text || "").toUpperCase().includes(String(p.codigo).toUpperCase()));
