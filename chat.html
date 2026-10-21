@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>MichiHub | Chat</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
@@ -56,33 +56,58 @@ header{
 
 .link-recuperar{display:block;text-align:center;margin-top:12px;font-size:0.85rem;color:var(--text-main);opacity:0.7;text-decoration:underline;cursor:pointer}
 
-/* MENU DE NAVEGACION */
+/* MENU DE NAVEGACION (barra inferior estilo Instagram) */
 nav.menu-principal{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:800;
     width:100%;
-    max-width:600px;
+    max-width:none;
+    margin:0;
     display:flex;
-    justify-content:center;
-    gap:6px;
-    margin-bottom:20px;
+    justify-content:space-around;
+    align-items:stretch;
+    gap:0;
     flex-wrap:nowrap;
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    background:var(--card-bg);
+    border-top:1px solid rgba(74,66,56,0.15);
+    box-shadow:0 -4px 14px var(--shadow);
+    overflow:visible;
 }
 nav.menu-principal a{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    padding:4px 2px;
+    min-width:0;
     text-decoration:none;
     color:var(--text-main);
-    background:var(--card-bg);
-    padding:6px 4px;
-    border-radius:16px;
+    opacity:0.6;
     font-weight:bold;
-    box-shadow:0 4px 10px var(--shadow);
-    font-size:0.68rem;
+    font-size:0.64rem;
     white-space:nowrap;
-    flex:1;
     text-align:center;
+    background:none;
+    box-shadow:none;
+    border-radius:12px;
+    -webkit-tap-highlight-color:transparent;
 }
+nav.menu-principal a .nav-ico{font-size:1.45rem;line-height:1}
+nav.menu-principal a .nav-txt{overflow:hidden;text-overflow:ellipsis;max-width:100%}
 nav.menu-principal a.activo{
-    background:var(--accent);
-    color:white;
+    opacity:1;
+    color:var(--accent);
+    background:none;
 }
+nav.menu-principal a.activo .nav-ico{transform:scale(1.1)}
+/* espacio para que la barra no tape el contenido */
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom, 0px)) !important}
 
 /* MAIN */
 main{
@@ -696,11 +721,11 @@ main{
 </header>
 
 <nav class="menu-principal">
-<a href="index.html">🏠 Inicio</a>
-<a href="chat.html" class="activo">💬 Chat</a>
-<a href="Comunidad.html">📸 Comunidad</a>
-<a href="Sismos.html">⚠️ Sismos</a>
-<a href="Instagram.html">📷 Insta</a>
+<a href="index.html"><span class="nav-ico">🏠</span><span class="nav-txt">Inicio</span></a>
+<a href="chat.html" class="activo"><span class="nav-ico">💬</span><span class="nav-txt">Chat</span></a>
+<a href="Comunidad.html"><span class="nav-ico">📸</span><span class="nav-txt">Comunidad</span></a>
+<a href="Sismos.html"><span class="nav-ico">⚠️</span><span class="nav-txt">Sismos</span></a>
+<a href="Instagram.html"><span class="nav-ico">📷</span><span class="nav-txt">Insta</span></a>
 </nav>
 
 <main>
