@@ -282,6 +282,7 @@ main{
 details.como{margin-top:6px}
 details.como summary{cursor:pointer;font-weight:bold;font-size:.9rem}
 details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
+body.ig-bloqueado #ig-login{display:none !important}
 </style>
 </head>
 <body>
@@ -905,6 +906,8 @@ configurarPWA();
 (function(){
   const cont = document.getElementById("vig-contenido");
   if (!cont) return;
+  const bloquear = (b) => document.body.classList.toggle("ig-bloqueado", b);
+  bloquear(true); // el login aparece solo cuando la cuenta ya está verificada
   const URL_RPC = "https://xeongtzcemodcpfdzqws.supabase.co/rest/v1/rpc/";
   const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhlb25ndHpjZW1vZGNwZmR6cXdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3ODQ4NzksImV4cCI6MjEwNTM2MDg3OX0.CiB3HW5KzRYPvpYS1SwfncSny_sXOvY48nustEsmnLQ";
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -926,14 +929,16 @@ configurarPWA();
   function pintarEstado(est) {
     if (est && est.estado === "verificada") {
       try { localStorage.setItem("michihubIgVerificado", est.usuario_ig); } catch (e) {}
+      bloquear(false);
       pintar('<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p><p style="text-align:center;margin-top:6px"><b>@' + esc(est.usuario_ig) + '</b></p>');
       return;
     }
     try { localStorage.removeItem("michihubIgVerificado"); } catch (e) {}
+    bloquear(true);
     if (est && est.estado === "pendiente") {
       pintar('<p>Verificación de <b>@' + esc(est.usuario_ig) + '</b> en revisión.</p>' +
         '<div style="' + caja + '">' + esc(est.codigo) + '</div>' +
-        '<p style="font-size:.9rem;line-height:1.5">Haz las <b>dos</b> cosas:<br>1. Pon este código en tu <b>bio de Instagram</b>.<br>2. Envíalo por <b>mensaje directo</b> a <b>@eofjs.dev</b> (la cuenta oficial de MichiHub).<br>3. Espera a que lo revisemos. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</p>' +
+        '<p style="font-size:.9rem;line-height:1.5">Pon este código en tu <b>bio de Instagram</b> y espera. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</p>' +
         '<p style="font-size:.85rem;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(176,158,141,.18)">⏳ Tu código está siendo verificado por los moderadores de MichiHub. Puede tardar de <b>24 horas</b> hasta <b>5 días hábiles</b>. Deja el código en tu bio hasta que se apruebe.</p>' +
         '<button class="btn-accion" id="vig-revisar" style="width:100%;padding:12px;font-weight:bold;margin-top:10px">Revisar estado</button>' +
         '<button class="btn-accion btn-sec" id="vig-cambiar" style="width:100%;padding:10px;margin-top:8px">Usar otra cuenta</button>' +
@@ -972,7 +977,7 @@ configurarPWA();
       const est = await rpc("ig_mi_estado", { p_correo: correo() });
       pintarEstado(est || null);
       if (manual && est && est.estado === "pendiente") { const m = document.getElementById("vig-msg"); if (m) m.textContent = "Sigue en revisión."; }
-    } catch (e) { pintar('<p style="color:#b5564a;font-size:.9rem">' + esc(msgErr(e)) + '</p>'); }
+    } catch (e) { bloquear(false); pintar('<p style="color:#b5564a;font-size:.9rem">' + esc(msgErr(e)) + '</p>'); }
   }
 
   cargar(false);
