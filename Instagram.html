@@ -481,6 +481,11 @@ try {
 } catch (e) {}
 let KEY = "";
 try { KEY = localStorage.getItem("michihub_ig_key") || ""; } catch (e) {}
+// La clave guardada pertenece a la cuenta de MichiHub que la guardó: si entra otra cuenta, se descarta
+const correoActual = () => { try { return (localStorage.getItem("michihubEmail") || "").trim().toLowerCase(); } catch (e) { return ""; } };
+try {
+  if (KEY && correoActual() && localStorage.getItem("michihub_ig_dueno") !== correoActual()) { localStorage.removeItem("michihub_ig_key"); KEY = ""; }
+} catch (e) {}
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = (d) => new Date(d).toLocaleString("es", { dateStyle: "medium", timeStyle: "short" });
@@ -664,12 +669,12 @@ $("ig-entrar").onclick = async () => {
   say("ig-login-msg", "Entrando…");
   try {
     await load();
-    if ($("ig-recordar").checked) { try { localStorage.setItem("michihub_ig_key", KEY); } catch (e) {} }
+    if ($("ig-recordar").checked) { try { localStorage.setItem("michihub_ig_key", KEY); localStorage.setItem("michihub_ig_dueno", correoActual()); } catch (e) {} }
     $("ig-login").classList.add("oculto"); $("ig-app").classList.remove("oculto");
     if (pendiente) { say("ig-con-msg", pendiente.ok ? "Instagram conectado." : "No se pudo conectar: " + (pendiente.msg || "intenta de nuevo."), pendiente.ok ? "ok" : "err"); pendiente = null; }
   } catch (e) { say("ig-login-msg", e.message === "no autorizado" ? "Clave incorrecta." : e.message, "err"); }
 };
-const salir = () => { try { localStorage.removeItem("michihub_ig_key"); } catch (e) {} location.reload(); };
+const salir = () => { try { localStorage.removeItem("michihub_ig_key"); localStorage.removeItem("michihub_ig_dueno"); } catch (e) {} location.reload(); };
 $("ig-salir").onclick = salir; $("ig-salir2").onclick = salir;
 async function conectar() {
   say("ig-con-msg", "Abriendo Instagram…");
