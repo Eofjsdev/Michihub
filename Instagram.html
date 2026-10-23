@@ -384,10 +384,6 @@ body.ig-bloqueado #ig-login{display:none !important}
 <div class="tabs-ig" id="ig-tabs">
 <button data-t="auto" class="activo">Respuestas</button>
 <button data-t="prog">Programar</button>
-<button data-t="com">Comentarios</button>
-<button data-t="msj">Mensajes</button>
-<button data-t="stats">Stats</button>
-<button data-t="ver">Verificar</button>
 </div>
 
 <section id="t-auto">
@@ -448,7 +444,17 @@ body.ig-bloqueado #ig-login{display:none !important}
 <div id="ig-mensajes"></div>
 </section>
 
-<section id="t-ver" class="oculto">
+<section id="t-stats" class="oculto">
+<h2 class="card-title">Estadísticas</h2>
+<button class="btn-accion btn-sec mini" id="loadStats" style="margin-bottom:12px">Cargar estadísticas</button>
+<div class="ig-msg" id="sMsg"></div>
+<div id="ig-stats"></div>
+</section>
+</div>
+</div>
+
+<div class="card" id="card-ver-admin">
+<section id="t-ver">
 <h2 class="card-title">Verificar cuentas</h2>
 <input class="ig-in" id="ver-clave" name="verificar-clave-admin" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Clave de administrador de verificaciones">
 <div class="filas-btn" style="margin:8px 0 12px">
@@ -457,15 +463,13 @@ body.ig-bloqueado #ig-login{display:none !important}
 </div>
 <div class="ig-msg" id="ver-msg"></div>
 <div id="ver-lista"></div>
-</section>
-
-<section id="t-stats" class="oculto">
-<h2 class="card-title">Estadísticas</h2>
-<button class="btn-accion btn-sec mini" id="loadStats" style="margin-bottom:12px">Cargar estadísticas</button>
-<div class="ig-msg" id="sMsg"></div>
-<div id="ig-stats"></div>
-</section>
+<h3 class="card-title" style="margin-top:24px">Cuentas verificadas</h3>
+<p class="chiquito">Deben mantener su código en la bio. Revisa de vez en cuando y quita la verificación si ya no está.</p>
+<div class="filas-btn" style="margin:8px 0 12px">
+<button class="btn-accion mini" id="ver-cargar-v">Cargar verificadas</button>
 </div>
+<div id="ver-lista-v"></div>
+</section>
 </div>
 
 </div>
@@ -671,6 +675,7 @@ $("ig-entrar").onclick = async () => {
     await load();
     if ($("ig-recordar").checked) { try { localStorage.setItem("michihub_ig_key", KEY); localStorage.setItem("michihub_ig_dueno", correoActual()); } catch (e) {} }
     $("ig-login").classList.add("oculto"); $("ig-app").classList.remove("oculto");
+    iniciarAutoPoll();
     if (pendiente) { say("ig-con-msg", pendiente.ok ? "Instagram conectado." : "No se pudo conectar: " + (pendiente.msg || "intenta de nuevo."), pendiente.ok ? "ok" : "err"); pendiente = null; }
   } catch (e) { say("ig-login-msg", e.message === "no autorizado" ? "Clave incorrecta." : e.message, "err"); }
 };
@@ -688,7 +693,7 @@ $("ig-desconectar").onclick = async () => {
 };
 document.querySelectorAll("#ig-tabs button").forEach((b) => b.onclick = () => {
   document.querySelectorAll("#ig-tabs button").forEach((x) => x.classList.toggle("activo", x === b));
-  ["auto", "prog", "com", "msj", "stats", "ver"].forEach((t) => $("t-" + t).classList.toggle("oculto", t !== b.dataset.t));
+  ["auto", "prog"].forEach((t) => $("t-" + t).classList.toggle("oculto", t !== b.dataset.t));
 });
 ["reload1", "reload2", "reload3"].forEach((id) => $(id).onclick = () => load().catch((e) => alert(e.message)));
 $("runNow").onclick = async () => { try { await api({ action: "publish_due" }); say("pMsg", "Revisando publicaciones vencidas. Toca Actualizar en unos segundos.", "ok"); } catch (e) { alert(e.message); } };
@@ -720,6 +725,16 @@ $("addRule").onclick = async () => {
     say("rMsg", "Respuesta agregada.", "ok"); $("rk").value = ""; $("rr").value = ""; await load();
   } catch (e) { say("rMsg", e.message, "err"); }
 };
+// Revisión automática: mientras el panel esté abierto, revisa mensajes y comentarios cada minuto
+let autoPollTimer = null;
+function iniciarAutoPoll() {
+  if (autoPollTimer) return;
+  say("ig-poll-msg", "Revisión automática activa: cada minuto mientras esta pantalla esté abierta.", "ok");
+  autoPollTimer = setInterval(async () => {
+    if (document.hidden) return;
+    try { await api({ action: "poll" }); } catch (e) {}
+  }, 60000);
+}
 $("ig-poll").onclick = async () => {
   say("ig-poll-msg", "Revisando…");
   try {
@@ -808,6 +823,29 @@ document.body.addEventListener("click", async (ev) => {
       await rpc("ig_admin_resolver", { p_id: id, p_estado: b.dataset.vok ? "verificada" : "rechazada", p_clave: clave() });
       pend = pend.filter((p) => String(p.id) !== String(id)); pintarVer();
       say("ver-msg", b.dataset.vok ? "Cuenta verificada." : "Solicitud rechazada.", "ok");
+    } catch (e) { say("ver-msg", e.message, "err"); }
+  };
+
+  let verif = [];
+  function pintarVerif() {
+    $("ver-lista-v").innerHTML = verif.length ? verif.map((p) => `<div class="item">
+      <div class="titulo">@${esc(p.usuario_ig)}</div>
+      <div class="chiquito">${esc(p.correo)}${p.resuelto_en ? " · " + esc(fmt(p.resuelto_en)) : ""}</div>
+      <div class="desc" style="font-weight:bold;letter-spacing:1px">${esc(p.codigo)}</div>
+      <div class="chiquito"><a href="https://www.instagram.com/${esc(p.usuario_ig)}/" target="_blank" rel="noopener">Ver perfil y revisar que el código siga en su bio</a></div>
+      <div class="filas-btn" style="margin-top:8px"><button class="btn-accion btn-peligro mini" data-vq="${esc(p.id)}">Quitar verificación</button></div></div>`).join("") : '<p class="chiquito">No hay cuentas verificadas.</p>';
+  }
+  $("ver-cargar-v").onclick = async () => {
+    try { say("ver-msg", "Cargando...", ""); verif = await rpc("ig_admin_verificadas", { p_clave: clave() }); say("ver-msg", "", ""); pintarVerif(); }
+    catch (e) { say("ver-msg", e.message, "err"); }
+  };
+  $("ver-lista-v").onclick = async (ev) => {
+    const b = ev.target.closest("button"); if (!b || !b.dataset.vq) return;
+    if (!confirm("¿Quitar la verificación de esta cuenta?")) return;
+    try {
+      await rpc("ig_admin_resolver", { p_id: b.dataset.vq, p_estado: "rechazada", p_clave: clave() });
+      verif = verif.filter((p) => String(p.id) !== String(b.dataset.vq)); pintarVerif();
+      say("ver-msg", "Verificación retirada.", "ok");
     } catch (e) { say("ver-msg", e.message, "err"); }
   };
 })();
@@ -935,7 +973,7 @@ configurarPWA();
     if (est && est.estado === "verificada") {
       try { localStorage.setItem("michihubIgVerificado", est.usuario_ig); } catch (e) {}
       bloquear(false);
-      pintar('<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p><p style="text-align:center;margin-top:6px"><b>@' + esc(est.usuario_ig) + '</b></p>');
+      pintar('<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p><p style="text-align:center;margin-top:6px"><b>@' + esc(est.usuario_ig) + '</b></p><p style="font-size:.85rem;text-align:center;margin-top:12px;opacity:.85">Mantén este código en tu bio de Instagram: <b>' + esc(est.codigo) + '</b><br>Si lo quitas, podemos retirar tu verificación.</p>');
       return;
     }
     try { localStorage.removeItem("michihubIgVerificado"); } catch (e) {}
@@ -943,8 +981,8 @@ configurarPWA();
     if (est && est.estado === "pendiente") {
       pintar('<p>Verificación de <b>@' + esc(est.usuario_ig) + '</b> en revisión.</p>' +
         '<div style="' + caja + '">' + esc(est.codigo) + '</div>' +
-        '<p style="font-size:.9rem;line-height:1.5">Pon este código en tu <b>bio de Instagram</b> y espera. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</p>' +
-        '<p style="font-size:.85rem;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(176,158,141,.18)">⏳ Tu código está siendo verificado por los moderadores de MichiHub. Puede tardar de <b>24 horas</b> hasta <b>5 días hábiles</b>. Deja el código en tu bio hasta que se apruebe.</p>' +
+        '<p style="font-size:.9rem;line-height:1.5">Pon este código en tu <b>bio de Instagram</b> y espera. Cuando se apruebe, aquí aparecerá tu ✅. <b>Mantén el código en tu bio</b>: si lo quitas, podemos retirar tu verificación.</p>' +
+        '<p style="font-size:.85rem;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(176,158,141,.18)">⏳ Tu código está siendo verificado por los moderadores de MichiHub. Puede tardar de <b>24 horas</b> hasta <b>5 días hábiles</b>. Deja el código en tu bio, antes y después de que se apruebe.</p>' +
         '<button class="btn-accion" id="vig-revisar" style="width:100%;padding:12px;font-weight:bold;margin-top:10px">Revisar estado</button>' +
         '<button class="btn-accion btn-sec" id="vig-cambiar" style="width:100%;padding:10px;margin-top:8px">Usar otra cuenta</button>' +
         '<div class="ig-msg" id="vig-msg" style="margin-top:8px"></div>');
@@ -952,7 +990,7 @@ configurarPWA();
       document.getElementById("vig-cambiar").onclick = () => formulario();
       return;
     }
-    formulario(est && est.estado === "rechazada" ? "Tu solicitud anterior fue rechazada. Puedes intentarlo de nuevo." : "");
+    formulario(est && est.estado === "rechazada" ? "Tu verificación fue rechazada o retirada (el código debe permanecer en tu bio). Puedes intentarlo de nuevo." : "");
   }
 
   function formulario(aviso) {
