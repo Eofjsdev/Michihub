@@ -640,6 +640,12 @@ main{
     color:#b09e8d;
 }
 
+.menu-cartel summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:bold}
+.menu-cartel summary::-webkit-details-marker{display:none}
+.menu-cartel summary::after{content:"▾";font-size:1.2rem;transition:transform .2s}
+.menu-cartel[open] summary::after{transform:rotate(180deg)}
+.menu-cartel .cartel-img{display:block;max-width:100%;margin:16px auto 0;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.menu-cartel .cartel-acciones{text-align:center;margin-top:6px}
 .btn-descarga{display:inline-block;padding:8px 20px;background:#b09e8d;color:white;border-radius:20px;text-decoration:none;margin-top:10px}
 
 /* MENU DE NAVEGACION (barra inferior estilo Instagram) */
@@ -658,7 +664,7 @@ nav.menu-principal{
     gap:0;
     flex-wrap:nowrap;
     padding:6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-    background:var(--card-bg);
+    background:var(--bg-base);
     border-top:1px solid rgba(74,66,56,0.15);
     box-shadow:0 -4px 14px var(--shadow);
     overflow:visible;
@@ -853,9 +859,12 @@ Crear Credencial
 
 </div>
 
-<div class="card" id="card-verificar-ig">
-<h2 class="card-title">Verificar Instagram</h2>
-<div id="vig-contenido"><p style="opacity:.7">Cargando...</p></div>
+<div class="card">
+<details class="menu-cartel">
+<summary>Descargar cartel</summary>
+<img class="cartel-img" src="cartel-michihub.png" alt="Cartel para descargar la app de MichiHub" loading="lazy">
+<div class="cartel-acciones"><a class="btn-descarga" href="cartel-michihub.png" download="MichiHub.png">Descargar cartel</a></div>
+</details>
 </div>
 
 <!-- Modal para crear credencial con más campos -->
@@ -3138,90 +3147,20 @@ document.addEventListener("contextmenu", (e) => {
 
 <script src="offline.js" defer></script>
 <script>
-/* VERIFICACIÓN DE INSTAGRAM POR CÓDIGO (sin documentos) */
+/* Mantiene al día la insignia de Instagram verificado (la verificación se hace en la sección Insta) */
 (function(){
-    const cont = document.getElementById("vig-contenido");
-    if(!cont) return;
-    const btn = "margin-top:10px;width:100%;padding:12px;border:none;border-radius:10px;background:#b09e8d;color:white;cursor:pointer;font-weight:bold;";
-    const btnSec = "margin-top:8px;width:100%;padding:10px;border:none;border-radius:10px;background:#999;color:white;cursor:pointer;";
-    const caja = "margin:12px 0;padding:14px;border-radius:12px;background:rgba(176,158,141,.18);font-size:1.4rem;font-weight:bold;letter-spacing:2px;text-align:center;user-select:all;-webkit-user-select:all;";
-    const correo = () => (localStorage.getItem("michihubEmail") || "").trim().toLowerCase();
-    const msgErr = (e) => /function|schema cache|does not exist/i.test(e && e.message || "")
-        ? "Falta crear las tablas de verificación en Supabase (ejecuta verificaciones_ig.sql)."
-        : ((e && e.message) || "No se pudo completar. Intenta de nuevo.");
-    let ocupado = false;
-
-    function pintar(html){ cont.innerHTML = html; }
-
-    function pintarEstado(est){
-        if(est && est.estado === "verificada"){
-            try{ localStorage.setItem("michihubIgVerificado", est.usuario_ig); }catch(e){}
-            pintar(`<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p>
-                    <p style="text-align:center;margin-top:6px"><b>@${escaparHTML(est.usuario_ig)}</b></p>`);
-            return;
-        }
-        try{ localStorage.removeItem("michihubIgVerificado"); }catch(e){}
-        if(est && est.estado === "pendiente"){
-            pintar(`<p>Verificación de <b>@${escaparHTML(est.usuario_ig)}</b> en revisión.</p>
-                <div style="${caja}">${escaparHTML(est.codigo)}</div>
-                <p style="font-size:.9rem;line-height:1.5">1. Pon este código en tu <b>bio de Instagram</b> o envíalo por <b>mensaje directo</b> a la cuenta oficial de MichiHub.<br>
-                2. Espera a que lo revisemos. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</p>
-                <button style="${btn}" id="vig-revisar">Revisar estado</button>
-                <button style="${btnSec}" id="vig-cambiar">Usar otra cuenta</button>
-                <p id="vig-msg" style="margin-top:8px;font-size:.85rem;opacity:.8"></p>`);
-            document.getElementById("vig-revisar").onclick = () => cargar(true);
-            document.getElementById("vig-cambiar").onclick = () => pintarFormulario();
-            return;
-        }
-        pintarFormulario(est && est.estado === "rechazada"
-            ? "Tu solicitud anterior fue rechazada. Puedes intentarlo de nuevo."
-            : "");
-    }
-
-    function pintarFormulario(aviso){
-        pintar(`<p style="font-size:.9rem;line-height:1.5">Verifica que tu cuenta de Instagram es tuya. No pedimos documentos: solo un código.</p>
-            ${aviso ? `<p style="margin-top:8px;color:#b5564a">${escaparHTML(aviso)}</p>` : ""}
-            <div class="search-box" style="margin-top:12px">
-                <input type="text" id="vig-usuario" placeholder="@tu_usuario" autocapitalize="off" autocomplete="off" maxlength="31">
-            </div>
-            <button style="${btn}" id="vig-generar">Generar código</button>
-            <p id="vig-msg" style="margin-top:8px;font-size:.85rem;color:#b5564a"></p>`);
-        document.getElementById("vig-generar").onclick = solicitar;
-    }
-
-    async function solicitar(){
-        if(ocupado) return;
-        const msg = document.getElementById("vig-msg");
-        const usuario = document.getElementById("vig-usuario").value.trim();
-        if(!usuario){ msg.textContent = "Escribe tu usuario de Instagram."; return; }
-        ocupado = true; msg.style.color = ""; msg.textContent = "Generando...";
+    async function sincronizar(){
+        const c = (localStorage.getItem("michihubEmail") || "").trim().toLowerCase();
+        if(!c) return;
         try{
-            const { data, error } = await supabaseCuentas.rpc("ig_solicitar", { p_correo: correo(), p_usuario_ig: usuario });
-            if(error) throw error;
-            pintarEstado(Array.isArray(data) ? data[0] : data);
-        }catch(e){
-            msg.style.color = "#b5564a"; msg.textContent = msgErr(e);
-        }finally{ ocupado = false; }
-    }
-
-    async function cargar(manual){
-        if(!correo()){ pintar('<p style="opacity:.8">Inicia sesión para verificar tu Instagram.</p>'); return; }
-        try{
-            const { data, error } = await supabaseCuentas.rpc("ig_mi_estado", { p_correo: correo() });
-            if(error) throw error;
+            const { data, error } = await supabaseCuentas.rpc("ig_mi_estado", { p_correo: c });
+            if(error) return;
             const est = Array.isArray(data) ? data[0] : data;
-            pintarEstado(est || null);
-            if(manual && est && est.estado === "pendiente"){
-                const m = document.getElementById("vig-msg"); if(m) m.textContent = "Sigue en revisión.";
-            }
-        }catch(e){
-            pintar(`<p style="color:#b5564a;font-size:.9rem">${escaparHTML(msgErr(e))}</p>`);
-        }
+            if(est && est.estado === "verificada") localStorage.setItem("michihubIgVerificado", est.usuario_ig);
+            else localStorage.removeItem("michihubIgVerificado");
+        }catch(e){}
     }
-
-    let ultimo = null;
-    setInterval(() => { const c = correo(); if(c !== ultimo){ ultimo = c; cargar(false); } }, 2000);
-    document.addEventListener("visibilitychange", () => { if(document.visibilityState === "visible" && correo() && !ocupado) cargar(false); });
+    window.addEventListener("load", () => setTimeout(sincronizar, 1500));
 })();
 </script>
 </body>
