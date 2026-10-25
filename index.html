@@ -640,12 +640,6 @@ main{
     color:#b09e8d;
 }
 
-.menu-cartel summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:bold}
-.menu-cartel summary::-webkit-details-marker{display:none}
-.menu-cartel summary::after{content:"▾";font-size:1.2rem;transition:transform .2s}
-.menu-cartel[open] summary::after{transform:rotate(180deg)}
-.menu-cartel .cartel-img{display:block;max-width:100%;margin:16px auto 0;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
-.menu-cartel .cartel-acciones{text-align:center;margin-top:6px}
 .btn-descarga{display:inline-block;padding:8px 20px;background:#b09e8d;color:white;border-radius:20px;text-decoration:none;margin-top:10px}
 
 /* MENU DE NAVEGACION (barra inferior estilo Instagram) */
@@ -859,16 +853,6 @@ Crear Credencial
 
 </div>
 
-<div class="card">
-<details class="menu-cartel">
-<summary>Descargar cartel</summary>
-<img class="cartel-img" src="cartel-michihub.png" alt="Cartel para descargar la app de MichiHub" loading="lazy">
-<div class="cartel-acciones">
-<a class="btn-descarga" href="cartel-michihub.png" download="MichiHub.png">Descargar cartel</a>
-<a class="btn-descarga" href="descarga.html" style="background:transparent;border:1.5px solid var(--accent);color:var(--text-main)">Descargar la app</a>
-</div>
-</details>
-</div>
 
 <!-- Modal para crear credencial con más campos -->
 <div id="modal-crear-credencial" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);flex-direction:column;align-items:center;justify-content:center;z-index:8000;padding:20px;">
