@@ -283,6 +283,36 @@ details.como{margin-top:6px}
 details.como summary{cursor:pointer;font-weight:bold;font-size:.9rem}
 details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
 body.ig-bloqueado #ig-login{display:none !important}
+
+/* RESPUESTAS AUTOMÁTICAS (lista, botón + y pantalla «Nueva respuesta») */
+.regla{background:rgba(255,255,255,.62);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px var(--shadow)}
+.regla-fila{display:flex;align-items:center;gap:12px}
+.regla-ico{width:46px;height:46px;border-radius:14px;background:rgba(176,158,141,.25);color:#8c7a68;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.regla-ico svg{width:24px;height:24px;pointer-events:none}
+.regla-info{flex:1;min-width:0}
+.regla-t{font-weight:bold;word-break:break-word}
+.regla-s{font-size:.78rem;opacity:.7}
+.regla-r{margin:10px 0 8px;font-size:.88rem;line-height:1.45;opacity:.9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.regla-pie{display:flex;gap:16px}
+.ib{display:inline-flex;align-items:center;gap:6px;border:none;background:none;color:var(--text-main);opacity:.75;font-family:inherit;font-size:.82rem;font-weight:bold;cursor:pointer;padding:4px 2px}
+.ib svg{width:18px;height:18px;pointer-events:none}
+.fab{position:fixed;right:20px;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,#b09e8d,#8c7a68);color:#fff;font-size:2.1rem;line-height:1;cursor:pointer;box-shadow:0 8px 20px rgba(74,66,56,.35);z-index:790}
+.ov{position:fixed;inset:0;z-index:900;background-color:var(--bg-base);background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');display:flex;flex-direction:column}
+.ov-barra{display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 10px}
+.ov-atras,.ov-guardar{border:none;background:none;color:#8c7a68;font-family:inherit;font-weight:bold;font-size:1rem;cursor:pointer;padding:6px}
+.ov-cuerpo{flex:1;overflow-y:auto;padding:6px 20px 20px;max-width:600px;width:100%;margin:0 auto}
+.ov-titulo{font-family:'Playfair Display',serif;font-size:2rem;margin:6px 0 10px}
+.ov-paso{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.65;font-weight:bold;margin:20px 0 10px}
+.opc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:18px;border:2px solid transparent;background:rgba(255,255,255,.62);box-shadow:0 4px 10px var(--shadow);font-family:inherit;color:var(--text-main);cursor:pointer;margin-bottom:10px}
+.opc.activo{border-color:var(--accent);background:rgba(176,158,141,.2)}
+.opc b{display:block}
+.opc small{font-size:.82rem;opacity:.7}
+.chip{margin-top:8px;border:none;border-radius:16px;padding:7px 14px;background:rgba(176,158,141,.28);color:#6f5f4e;font-family:inherit;font-weight:bold;font-size:.85rem;cursor:pointer}
+.ov-prev-t{font-size:.72rem;letter-spacing:.12em;opacity:.6;font-weight:bold;margin:18px 0 8px}
+.burbuja{display:inline-block;max-width:92%;padding:10px 14px;border-radius:18px;background:rgba(255,255,255,.75);box-shadow:0 3px 8px var(--shadow);font-size:.95rem;white-space:pre-wrap;word-break:break-word}
+.ov-pie{padding:12px 20px calc(16px + env(safe-area-inset-bottom,0px))}
+.btn-grad{width:100%;max-width:560px;display:block;margin:0 auto;padding:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#b09e8d,#8c7a68);color:#fff;font-family:inherit;font-weight:bold;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 18px rgba(74,66,56,.25)}
+details.como summary::before{content:"ⓘ  "}
 </style>
 </head>
 <body>
@@ -388,20 +418,11 @@ body.ig-bloqueado #ig-login{display:none !important}
 
 <section id="t-auto">
 <h2 class="card-title">Respuestas automáticas</h2>
-<p class="ig-sub">Cuando alguien comenta o escribe una de tus palabras, el bot contesta por ti. Escribe {usuario} y se cambia por el @ de la persona.</p>
+<p class="ig-sub">Cuando alguien comenta o te escribe una de tus palabras, el bot contesta por ti.</p>
 <div class="filas-btn" style="margin:0 0 6px"><button class="btn-accion btn-sec mini" id="ig-poll">Revisar mensajes y comentarios ahora</button></div>
 <div class="ig-msg" id="ig-poll-msg"></div>
 <div id="ig-reglas"></div>
-<div class="item" id="ig-form-regla">
-<label class="ig-lbl" for="rk" style="margin-top:0">Palabra o palabras (separadas por comas)</label>
-<input class="ig-in" id="rk" placeholder="precio, costo, cuánto">
-<label class="ig-lbl" for="rr">Respuesta automática</label>
-<textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
-<label class="ig-lbl" for="rs">Responder en</label>
-<select class="ig-sel" id="rs"><option value="ambos">Mensajes y comentarios</option><option value="mensajes">Solo mensajes</option><option value="comentarios">Solo comentarios</option></select>
-<div class="ig-msg" id="rMsg"></div>
-<button class="btn-accion" id="addRule" style="width:100%;padding:11px;font-weight:bold">Agregar respuesta</button>
-</div>
+<button class="fab" id="fab-regla" aria-label="Nueva respuesta">+</button>
 <details class="como"><summary>¿Cómo funciona el bot?</summary>
 <p>Instagram avisa a tu sistema cuando llega un comentario o un mensaje. Si el texto contiene una de tus palabras, el bot responde solo; no importan mayúsculas ni acentos y, si coinciden varias reglas, contesta la primera. Los mensajes solo se pueden responder dentro de las 24 horas siguientes al mensaje de la persona.</p></details>
 </section>
@@ -475,6 +496,30 @@ body.ig-bloqueado #ig-login{display:none !important}
 </div>
 </main>
 
+<div class="ov oculto" id="regla-ov" role="dialog" aria-modal="true" aria-label="Nueva respuesta">
+<div class="ov-barra"><button class="ov-atras" id="ov-cerrar">‹ Instagram</button><button class="ov-guardar" id="ov-guardar">Guardar</button></div>
+<div class="ov-cuerpo">
+<h2 class="ov-titulo">Nueva respuesta</h2>
+<div class="ov-paso">1 · Cuándo</div>
+<div id="ov-scopes">
+<button class="opc activo" data-sc="ambos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg></span><span><b>Te escriben o comentan</b><small>Mensajes y comentarios</small></span></button>
+<button class="opc" data-sc="comentarios"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><span><b>Comentan en una publicación</b><small>En una concreta o en todas</small></span></button>
+<button class="opc" data-sc="mensajes"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></span><span><b>Te escriben por mensaje</b><small>Mensajes directos</small></span></button>
+</div>
+<div class="ov-paso">2 · Palabras</div>
+<input class="ig-in" id="rk" placeholder="precio, costo, cuánto" autocomplete="off">
+<p class="ig-sub" style="margin-top:8px">Sepáralas con comas. Responde si el texto contiene alguna.</p>
+<div class="ov-paso">3 · Qué responde</div>
+<textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
+<button class="chip" id="ov-usuario" type="button">+ Su @usuario</button>
+<div class="ov-prev-t">ASÍ LO VERÁ</div>
+<div class="burbuja" id="ov-prev">Aquí verás cómo le llega la respuesta.</div>
+<div class="ig-msg" id="rMsg"></div>
+</div>
+<div class="ov-pie"><button class="btn-grad" id="ov-guardar2">Guardar respuesta</button></div>
+</div>
+
+
 <script>
 (function(){
 const FN = "https://xeongtzcemodcpfdzqws.supabase.co/functions/v1/instagram";
@@ -544,17 +589,30 @@ async function load() {
   renderPosts(d.posts); renderComments(d.comments); renderMessages(d.messages); renderRules(d.rules || []);
 }
 
+const ICO_SC = {
+  comentarios: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
+  mensajes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>',
+  ambos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg>',
+};
+const ETQ_SC = { comentarios: "Comentarios", mensajes: "Mensajes", ambos: "Mensajes y comentarios" };
+const ICO_COPIAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+const ICO_BORRAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>';
+let ultimasReglas = [];
 function renderRules(list) {
+  ultimasReglas = list;
   $("ig-reglas").innerHTML = list.length ? list.map((r) => `
-    <div class="item"><div class="fila">
-      <div class="info">
-        <div class="titulo">${esc(r.keyword)}</div>
-        <div class="desc">${esc(r.reply)}</div>
-        <div class="chiquito">${esc(r.scope)}</div>
-        <div class="filas-btn" style="margin-top:8px"><button class="btn-accion btn-peligro mini" data-dr="${r.id}">Eliminar</button></div>
+    <div class="regla">
+      <div class="regla-fila">
+        <div class="regla-ico">${ICO_SC[r.scope] || ICO_SC.ambos}</div>
+        <div class="regla-info"><div class="regla-t">${esc(r.keyword)}</div><div class="regla-s">${esc(ETQ_SC[r.scope] || r.scope)}</div></div>
+        <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
       </div>
-      <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
-    </div></div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas.</p>';
+      <div class="regla-r">${esc(r.reply)}</div>
+      <div class="regla-pie">
+        <button class="ib" data-cp="${r.id}">${ICO_COPIAR} Duplicar</button>
+        <button class="ib" data-dr="${r.id}">${ICO_BORRAR} Eliminar</button>
+      </div>
+    </div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas. Toca + para crear la primera.</p>';
 }
 let verPublicadas = false, ultimosPosts = [];
 function renderPosts(all) {
@@ -717,14 +775,26 @@ $("addPost").onclick = async () => {
   } catch (e) { say("pMsg", e.message, "err"); }
   btn.disabled = false;
 };
-$("addRule").onclick = async () => {
+let scopeSel = "ambos";
+function marcarScope() { document.querySelectorAll("#ov-scopes .opc").forEach((b) => b.classList.toggle("activo", b.dataset.sc === scopeSel)); }
+function prevRegla() { const t = $("rr").value.trim(); $("ov-prev").textContent = t ? t.split("{usuario}").join("@ana.garcia") : "Aquí verás cómo le llega la respuesta."; }
+function abrirRegla() { scopeSel = "ambos"; $("rk").value = ""; $("rr").value = ""; say("rMsg", ""); marcarScope(); prevRegla(); $("regla-ov").classList.remove("oculto"); document.body.style.overflow = "hidden"; }
+function cerrarRegla() { $("regla-ov").classList.add("oculto"); document.body.style.overflow = ""; }
+async function guardarRegla() {
   const k = $("rk").value.trim(), r = $("rr").value.trim();
   if (!k || !r) return say("rMsg", "Escribe la palabra y la respuesta.", "err");
   try {
-    await api({ action: "add_rule", keyword: k, reply: r, scope: $("rs").value });
-    say("rMsg", "Respuesta agregada.", "ok"); $("rk").value = ""; $("rr").value = ""; await load();
+    await api({ action: "add_rule", keyword: k, reply: r, scope: scopeSel });
+    cerrarRegla(); await load();
   } catch (e) { say("rMsg", e.message, "err"); }
-};
+}
+$("fab-regla").onclick = abrirRegla;
+$("ov-cerrar").onclick = cerrarRegla;
+$("ov-guardar").onclick = guardarRegla;
+$("ov-guardar2").onclick = guardarRegla;
+$("ov-scopes").onclick = (ev) => { const b = ev.target.closest(".opc"); if (!b) return; scopeSel = b.dataset.sc; marcarScope(); };
+$("rr").oninput = prevRegla;
+$("ov-usuario").onclick = () => { const ta = $("rr"); const i = ta.selectionStart == null ? ta.value.length : ta.selectionStart; ta.value = ta.value.slice(0, i) + "{usuario}" + ta.value.slice(i); ta.focus(); prevRegla(); };
 // Revisión automática: mientras el panel esté abierto, revisa mensajes y comentarios cada minuto
 let autoPollTimer = null;
 function iniciarAutoPoll() {
@@ -769,6 +839,7 @@ document.body.addEventListener("click", async (ev) => {
     }
     if (t.dataset.rt) { await api({ action: "update_post", id: Number(t.dataset.rt), reset: true }); await load(); }
     if (t.dataset.dr) { if (confirm("¿Eliminar esta respuesta automática?")) { await api({ action: "delete_rule", id: Number(t.dataset.dr) }); await load(); } }
+    if (t.dataset.cp) { const r = ultimasReglas.find((x) => String(x.id) === t.dataset.cp); if (r) { await api({ action: "add_rule", keyword: r.keyword, reply: r.reply, scope: r.scope }); await load(); } }
     if (t.dataset.del) { if (confirm("¿Eliminar esta publicación?")) { await api({ action: "delete_post", id: Number(t.dataset.del) }); await load(); } }
     if (t.dataset.rc) { const txt = $("rc-" + t.dataset.rc).value.trim(); if (txt) { await api({ action: "reply_comment", comment_id: t.dataset.rc, text: txt }); await load(); } }
     if (t.dataset.rm) { const txt = $("rm-" + t.dataset.rm).value.trim(); if (txt) { await api({ action: "send_message", recipient_id: t.dataset.rm, text: txt }); await load(); } }

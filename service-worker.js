@@ -1,5 +1,5 @@
 /* MichiHub - Service Worker */
-const VERSION = "michihub-v8";
+const VERSION = "michihub-v9";
 const CACHE_PRECARGA = VERSION + "-precarga";
 const CACHE_DINAMICA = VERSION + "-dinamica";
 const ARCHIVOS = ["./", "index.html", "chat.html", "Comunidad.html", "Sismos.html", "Instagram.html", "frecuencia.html", "manifest.json", "offline.js", "icon-192.png", "icon-512.png"];
