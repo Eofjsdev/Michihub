@@ -307,6 +307,8 @@ body.ig-bloqueado #ig-login{display:none !important}
 .opc.activo{border-color:var(--accent);background:rgba(176,158,141,.2)}
 .opc b{display:block}
 .opc small{font-size:.82rem;opacity:.7}
+.ov-ejemplos{display:flex;flex-wrap:wrap;gap:8px}
+.ov-ejemplos .chip{margin-top:0}
 .chip{margin-top:8px;border:none;border-radius:16px;padding:7px 14px;background:rgba(176,158,141,.28);color:#6f5f4e;font-family:inherit;font-weight:bold;font-size:.85rem;cursor:pointer}
 .ov-prev-t{font-size:.72rem;letter-spacing:.12em;opacity:.6;font-weight:bold;margin:18px 0 8px}
 .burbuja{display:inline-block;max-width:92%;padding:10px 14px;border-radius:18px;background:rgba(255,255,255,.75);box-shadow:0 3px 8px var(--shadow);font-size:.95rem;white-space:pre-wrap;word-break:break-word}
@@ -500,15 +502,20 @@ details.como summary::before{content:"ⓘ  "}
 <div class="ov-barra"><button class="ov-atras" id="ov-cerrar">‹ Instagram</button><button class="ov-guardar" id="ov-guardar">Guardar</button></div>
 <div class="ov-cuerpo">
 <h2 class="ov-titulo">Nueva respuesta</h2>
+<div class="ov-paso">Empieza con un ejemplo</div>
+<div id="ov-ejemplos" class="ov-ejemplos"></div>
 <div class="ov-paso">1 · Cuándo</div>
 <div id="ov-scopes">
-<button class="opc activo" data-sc="ambos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg></span><span><b>Te escriben o comentan</b><small>Mensajes y comentarios</small></span></button>
+<button class="opc activo" data-sc="ambos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg></span><span><b>Te escriben o comentan</b><small>Mensajes privados y comentarios</small></span></button>
+<button class="opc" data-sc="mensajes"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></span><span><b>Te escriben por mensaje privado</b><small>Mensajes directos</small></span></button>
 <button class="opc" data-sc="comentarios"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><span><b>Comentan en una publicación</b><small>En una concreta o en todas</small></span></button>
-<button class="opc" data-sc="mensajes"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></span><span><b>Te escriben por mensaje</b><small>Mensajes directos</small></span></button>
+<button class="opc" data-sc="directos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M19 5a10 10 0 0 1 0 14"/><path d="M5 19a10 10 0 0 1 0-14"/></svg></span><span><b>Comentan en un directo</b><small>Mientras haces un live (respuesta privada)</small></span></button>
+<button class="opc" data-sc="historias"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg></span><span><b>Responden a tu historia</b><small>Te contestan a un story</small></span></button>
+<button class="opc" data-sc="menciones_historia"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></span><span><b>Te mencionan en su historia</b><small>Te etiquetan en un story suyo</small></span></button>
 </div>
 <div class="ov-paso">2 · Palabras</div>
 <input class="ig-in" id="rk" placeholder="precio, costo, cuánto" autocomplete="off">
-<p class="ig-sub" style="margin-top:8px">Sepáralas con comas. Responde si el texto contiene alguna.</p>
+<p class="ig-sub" style="margin-top:8px">Sepáralas con comas. Responde si el texto contiene alguna. Escribe * para responder siempre.</p>
 <div class="ov-paso">3 · Qué responde</div>
 <textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
 <button class="chip" id="ov-usuario" type="button">+ Su @usuario</button>
@@ -593,8 +600,11 @@ const ICO_SC = {
   comentarios: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
   mensajes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>',
   ambos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg>',
+  directos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M19 5a10 10 0 0 1 0 14"/><path d="M5 19a10 10 0 0 1 0-14"/></svg>',
+  historias: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg>',
+  menciones_historia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>',
 };
-const ETQ_SC = { comentarios: "Comentarios", mensajes: "Mensajes", ambos: "Mensajes y comentarios" };
+const ETQ_SC = { comentarios: "Comentarios", mensajes: "Mensaje privado", ambos: "Mensajes y comentarios", directos: "Directo", historias: "Respuesta a historia", menciones_historia: "Mención en historia" };
 const ICO_COPIAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
 const ICO_BORRAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>';
 let ultimasReglas = [];
@@ -781,13 +791,34 @@ function prevRegla() { const t = $("rr").value.trim(); $("ov-prev").textContent 
 function abrirRegla() { scopeSel = "ambos"; $("rk").value = ""; $("rr").value = ""; say("rMsg", ""); marcarScope(); prevRegla(); $("regla-ov").classList.remove("oculto"); document.body.style.overflow = "hidden"; }
 function cerrarRegla() { $("regla-ov").classList.add("oculto"); document.body.style.overflow = ""; }
 async function guardarRegla() {
-  const k = $("rk").value.trim(), r = $("rr").value.trim();
+  let k = $("rk").value.trim(); const r = $("rr").value.trim();
+  if (!k && scopeSel === "menciones_historia") k = "*";
   if (!k || !r) return say("rMsg", "Escribe la palabra y la respuesta.", "err");
   try {
     await api({ action: "add_rule", keyword: k, reply: r, scope: scopeSel });
     cerrarRegla(); await load();
   } catch (e) { say("rMsg", e.message, "err"); }
 }
+const EJEMPLOS = [
+  { n: "Saludo", sc: "mensajes", k: "hola, buenas, buenos dias, buenas tardes, buenas noches", r: "¡Hola {usuario}! 🐾 Bienvenido a MichiHub. ¿En qué te ayudo?" },
+  { n: "Gracias", sc: "comentarios", k: "gracias", r: "¡Gracias a ti {usuario}! 🐾💛" },
+  { n: "Precio", sc: "ambos", k: "precio, costo, cuanto cuesta", r: "¡Hola {usuario}! MichiHub es gratis 🐾 Entra aquí: https://eofjsdev.github.io/Michihub/" },
+  { n: "Información", sc: "mensajes", k: "info, informacion, que es michihub", r: "MichiHub es una app con radio lo-fi, chat, juegos y más 🐾 https://eofjsdev.github.io/Michihub/" },
+  { n: "Descargar app", sc: "ambos", k: "descargar, descarga, instalar", r: "¡Claro {usuario}! Abre https://eofjsdev.github.io/Michihub/ y toca «Agregar a pantalla de inicio» 📲" },
+  { n: "Radio", sc: "ambos", k: "radio, musica, lofi", r: "🎧 La radio lo-fi de MichiHub suena todo el día: https://eofjsdev.github.io/Michihub/" },
+  { n: "Ayuda", sc: "mensajes", k: "ayuda, soporte, problema", r: "¡Hola {usuario}! Cuéntame qué pasó y te ayudamos lo antes posible 🐾" },
+  { n: "Enlace", sc: "comentarios", k: "link, enlace, donde", r: "Aquí está el enlace {usuario}: https://eofjsdev.github.io/Michihub/ 🐾" },
+  { n: "Historia", sc: "historias", k: "*", r: "¡Gracias por responder a mi historia {usuario}! 🐾" },
+  { n: "Directo", sc: "directos", k: "hola, saludos", r: "¡Hola {usuario}! Gracias por acompañarme en el directo 🐾" },
+  { n: "Mención", sc: "menciones_historia", k: "*", r: "¡Gracias por mencionarme {usuario}! 💛" },
+  { n: "Verificar cuenta", sc: "comentarios", k: "verificar, verificacion, insignia", r: "Para verificar tu cuenta entra a MichiHub, abre Insta, genera tu código y mándame «verificar» por mensaje privado ✅" },
+];
+$("ov-ejemplos").innerHTML = EJEMPLOS.map((e, i) => `<button class="chip" type="button" data-ej="${i}">${esc(e.n)}</button>`).join("");
+$("ov-ejemplos").onclick = (ev) => {
+  const b = ev.target.closest("[data-ej]"); if (!b) return;
+  const e = EJEMPLOS[Number(b.dataset.ej)];
+  scopeSel = e.sc; marcarScope(); $("rk").value = e.k; $("rr").value = e.r; prevRegla();
+};
 $("fab-regla").onclick = abrirRegla;
 $("ov-cerrar").onclick = cerrarRegla;
 $("ov-guardar").onclick = guardarRegla;
