@@ -549,8 +549,20 @@ const pad = (n) => String(n).padStart(2, "0");
 const toLocalInput = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const KIND = { IMAGE: "Foto", REELS: "Reel", STORY: "Story", CAROUSEL: "Carrusel" };
 
+// La función puede llamarse «instagram» o «Instagram»: se prueba con las dos
+const FN_ALT = FN.replace("/functions/v1/instagram", "/functions/v1/Instagram");
+let FN_USO = FN;
 async function api(body) {
-  const r = await fetch(FN, { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(body) });
+  const intentos = FN_USO === FN ? [FN, FN_ALT] : [FN_ALT, FN];
+  let r = null, fallo = null;
+  for (const url of intentos) {
+    try {
+      const x = await fetch(url, { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(body) });
+      if (x.status === 404) { fallo = new Error("Error 404"); continue; }
+      r = x; FN_USO = url; break;
+    } catch (e) { fallo = e; }
+  }
+  if (!r) throw fallo || new Error("No se pudo conectar con la función de Instagram");
   let j = {};
   try { j = await r.json(); } catch (e) {}
   if (!r.ok) throw new Error(j.error || ("Error " + r.status));
