@@ -283,38 +283,6 @@ details.como{margin-top:6px}
 details.como summary{cursor:pointer;font-weight:bold;font-size:.9rem}
 details.como p{font-size:.85rem;line-height:1.5;margin-top:8px;opacity:.85}
 body.ig-bloqueado #ig-login{display:none !important}
-
-/* RESPUESTAS AUTOMÁTICAS (lista, botón + y pantalla «Nueva respuesta») */
-.regla{background:rgba(255,255,255,.62);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px var(--shadow)}
-.regla-fila{display:flex;align-items:center;gap:12px}
-.regla-ico{width:46px;height:46px;border-radius:14px;background:rgba(176,158,141,.25);color:#8c7a68;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.regla-ico svg{width:24px;height:24px;pointer-events:none}
-.regla-info{flex:1;min-width:0}
-.regla-t{font-weight:bold;word-break:break-word}
-.regla-s{font-size:.78rem;opacity:.7}
-.regla-r{margin:10px 0 8px;font-size:.88rem;line-height:1.45;opacity:.9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
-.regla-pie{display:flex;gap:16px}
-.ib{display:inline-flex;align-items:center;gap:6px;border:none;background:none;color:var(--text-main);opacity:.75;font-family:inherit;font-size:.82rem;font-weight:bold;cursor:pointer;padding:4px 2px}
-.ib svg{width:18px;height:18px;pointer-events:none}
-.fab{position:fixed;right:20px;bottom:calc(92px + env(safe-area-inset-bottom,0px));width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,#b09e8d,#8c7a68);color:#fff;font-size:2.1rem;line-height:1;cursor:pointer;box-shadow:0 8px 20px rgba(74,66,56,.35);z-index:790}
-.ov{position:fixed;inset:0;z-index:900;background-color:var(--bg-base);background-image:url('https://www.transparenttextures.com/patterns/cream-paper.png');display:flex;flex-direction:column}
-.ov-barra{display:flex;justify-content:space-between;align-items:center;padding:calc(14px + env(safe-area-inset-top,0px)) 18px 10px}
-.ov-atras,.ov-guardar{border:none;background:none;color:#8c7a68;font-family:inherit;font-weight:bold;font-size:1rem;cursor:pointer;padding:6px}
-.ov-cuerpo{flex:1;overflow-y:auto;padding:6px 20px 20px;max-width:600px;width:100%;margin:0 auto}
-.ov-titulo{font-family:'Playfair Display',serif;font-size:2rem;margin:6px 0 10px}
-.ov-paso{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.65;font-weight:bold;margin:20px 0 10px}
-.opc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px;border-radius:18px;border:2px solid transparent;background:rgba(255,255,255,.62);box-shadow:0 4px 10px var(--shadow);font-family:inherit;color:var(--text-main);cursor:pointer;margin-bottom:10px}
-.opc.activo{border-color:var(--accent);background:rgba(176,158,141,.2)}
-.opc b{display:block}
-.opc small{font-size:.82rem;opacity:.7}
-.ov-ejemplos{display:flex;flex-wrap:wrap;gap:8px}
-.ov-ejemplos .chip{margin-top:0}
-.chip{margin-top:8px;border:none;border-radius:16px;padding:7px 14px;background:rgba(176,158,141,.28);color:#6f5f4e;font-family:inherit;font-weight:bold;font-size:.85rem;cursor:pointer}
-.ov-prev-t{font-size:.72rem;letter-spacing:.12em;opacity:.6;font-weight:bold;margin:18px 0 8px}
-.burbuja{display:inline-block;max-width:92%;padding:10px 14px;border-radius:18px;background:rgba(255,255,255,.75);box-shadow:0 3px 8px var(--shadow);font-size:.95rem;white-space:pre-wrap;word-break:break-word}
-.ov-pie{padding:12px 20px calc(16px + env(safe-area-inset-bottom,0px))}
-.btn-grad{width:100%;max-width:560px;display:block;margin:0 auto;padding:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#b09e8d,#8c7a68);color:#fff;font-family:inherit;font-weight:bold;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 18px rgba(74,66,56,.25)}
-details.como summary::before{content:"ⓘ  "}
 </style>
 </head>
 <body>
@@ -416,15 +384,25 @@ details.como summary::before{content:"ⓘ  "}
 <div class="tabs-ig" id="ig-tabs">
 <button data-t="auto" class="activo">Respuestas</button>
 <button data-t="prog">Programar</button>
+<button data-t="ver">Verificar</button>
 </div>
 
 <section id="t-auto">
 <h2 class="card-title">Respuestas automáticas</h2>
-<p class="ig-sub">Cuando alguien comenta o te escribe una de tus palabras, el bot contesta por ti.</p>
+<p class="ig-sub">Cuando alguien comenta o escribe una de tus palabras, el bot contesta por ti. Escribe {usuario} y se cambia por el @ de la persona.</p>
 <div class="filas-btn" style="margin:0 0 6px"><button class="btn-accion btn-sec mini" id="ig-poll">Revisar mensajes y comentarios ahora</button></div>
 <div class="ig-msg" id="ig-poll-msg"></div>
 <div id="ig-reglas"></div>
-<button class="fab" id="fab-regla" aria-label="Nueva respuesta">+</button>
+<div class="item" id="ig-form-regla">
+<label class="ig-lbl" for="rk" style="margin-top:0">Palabra o palabras (separadas por comas)</label>
+<input class="ig-in" id="rk" placeholder="precio, costo, cuánto">
+<label class="ig-lbl" for="rr">Respuesta automática</label>
+<textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
+<label class="ig-lbl" for="rs">Responder en</label>
+<select class="ig-sel" id="rs"><option value="ambos">Mensajes y comentarios</option><option value="mensajes">Solo mensajes</option><option value="comentarios">Solo comentarios</option></select>
+<div class="ig-msg" id="rMsg"></div>
+<button class="btn-accion" id="addRule" style="width:100%;padding:11px;font-weight:bold">Agregar respuesta</button>
+</div>
 <details class="como"><summary>¿Cómo funciona el bot?</summary>
 <p>Instagram avisa a tu sistema cuando llega un comentario o un mensaje. Si el texto contiene una de tus palabras, el bot responde solo; no importan mayúsculas ni acentos y, si coinciden varias reglas, contesta la primera. Los mensajes solo se pueden responder dentro de las 24 horas siguientes al mensaje de la persona.</p></details>
 </section>
@@ -454,30 +432,7 @@ details.como summary::before{content:"ⓘ  "}
 <div id="ig-posts"></div>
 </section>
 
-<section id="t-com" class="oculto">
-<h2 class="card-title">Comentarios</h2>
-<button class="btn-accion btn-sec mini" id="reload2" style="margin-bottom:12px">Actualizar</button>
-<div id="ig-comentarios"></div>
-</section>
-
-<section id="t-msj" class="oculto">
-<h2 class="card-title">Mensajes</h2>
-<p class="ig-sub">Solo puedes responder dentro de las 24 horas siguientes al último mensaje de la persona.</p>
-<button class="btn-accion btn-sec mini" id="reload3" style="margin-bottom:12px">Actualizar</button>
-<div id="ig-mensajes"></div>
-</section>
-
-<section id="t-stats" class="oculto">
-<h2 class="card-title">Estadísticas</h2>
-<button class="btn-accion btn-sec mini" id="loadStats" style="margin-bottom:12px">Cargar estadísticas</button>
-<div class="ig-msg" id="sMsg"></div>
-<div id="ig-stats"></div>
-</section>
-</div>
-</div>
-
-<div class="card" id="card-ver-admin">
-<section id="t-ver">
+<section id="t-ver" class="oculto">
 <h2 class="card-title">Verificar cuentas</h2>
 <input class="ig-in" id="ver-clave" name="verificar-clave-admin" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Clave de administrador de verificaciones">
 <div class="filas-btn" style="margin:8px 0 12px">
@@ -486,46 +441,13 @@ details.como summary::before{content:"ⓘ  "}
 </div>
 <div class="ig-msg" id="ver-msg"></div>
 <div id="ver-lista"></div>
-<h3 class="card-title" style="margin-top:24px">Cuentas verificadas</h3>
-<p class="chiquito">Deben mantener su código en la bio. Revisa de vez en cuando y quita la verificación si ya no está.</p>
-<div class="filas-btn" style="margin:8px 0 12px">
-<button class="btn-accion mini" id="ver-cargar-v">Cargar verificadas</button>
-</div>
-<div id="ver-lista-v"></div>
 </section>
+
+</div>
 </div>
 
 </div>
 </main>
-
-<div class="ov oculto" id="regla-ov" role="dialog" aria-modal="true" aria-label="Nueva respuesta">
-<div class="ov-barra"><button class="ov-atras" id="ov-cerrar">‹ Instagram</button><button class="ov-guardar" id="ov-guardar">Guardar</button></div>
-<div class="ov-cuerpo">
-<h2 class="ov-titulo">Nueva respuesta</h2>
-<div class="ov-paso">Empieza con un ejemplo</div>
-<div id="ov-ejemplos" class="ov-ejemplos"></div>
-<div class="ov-paso">1 · Cuándo</div>
-<div id="ov-scopes">
-<button class="opc activo" data-sc="ambos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg></span><span><b>Te escriben o comentan</b><small>Mensajes privados y comentarios</small></span></button>
-<button class="opc" data-sc="mensajes"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg></span><span><b>Te escriben por mensaje privado</b><small>Mensajes directos</small></span></button>
-<button class="opc" data-sc="comentarios"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><span><b>Comentan en una publicación</b><small>En una concreta o en todas</small></span></button>
-<button class="opc" data-sc="directos"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M19 5a10 10 0 0 1 0 14"/><path d="M5 19a10 10 0 0 1 0-14"/></svg></span><span><b>Comentan en un directo</b><small>Mientras haces un live (respuesta privada)</small></span></button>
-<button class="opc" data-sc="historias"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg></span><span><b>Responden a tu historia</b><small>Te contestan a un story</small></span></button>
-<button class="opc" data-sc="menciones_historia"><span class="regla-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></span><span><b>Te mencionan en su historia</b><small>Te etiquetan en un story suyo</small></span></button>
-</div>
-<div class="ov-paso">2 · Palabras</div>
-<input class="ig-in" id="rk" placeholder="precio, costo, cuánto" autocomplete="off">
-<p class="ig-sub" style="margin-top:8px">Sepáralas con comas. Responde si el texto contiene alguna. Escribe * para responder siempre.</p>
-<div class="ov-paso">3 · Qué responde</div>
-<textarea class="ig-ta" id="rr" placeholder="Hola {usuario}, el precio es…"></textarea>
-<button class="chip" id="ov-usuario" type="button">+ Su @usuario</button>
-<div class="ov-prev-t">ASÍ LO VERÁ</div>
-<div class="burbuja" id="ov-prev">Aquí verás cómo le llega la respuesta.</div>
-<div class="ig-msg" id="rMsg"></div>
-</div>
-<div class="ov-pie"><button class="btn-grad" id="ov-guardar2">Guardar respuesta</button></div>
-</div>
-
 
 <script>
 (function(){
@@ -549,20 +471,8 @@ const pad = (n) => String(n).padStart(2, "0");
 const toLocalInput = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const KIND = { IMAGE: "Foto", REELS: "Reel", STORY: "Story", CAROUSEL: "Carrusel" };
 
-// La función puede llamarse «instagram» o «Instagram»: se prueba con las dos
-const FN_ALT = FN.replace("/functions/v1/instagram", "/functions/v1/Instagram");
-let FN_USO = FN;
 async function api(body) {
-  const intentos = FN_USO === FN ? [FN, FN_ALT] : [FN_ALT, FN];
-  let r = null, fallo = null;
-  for (const url of intentos) {
-    try {
-      const x = await fetch(url, { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(body) });
-      if (x.status === 404) { fallo = new Error("Error 404"); continue; }
-      r = x; FN_USO = url; break;
-    } catch (e) { fallo = e; }
-  }
-  if (!r) throw fallo || new Error("No se pudo conectar con la función de Instagram");
+  const r = await fetch(FN, { method: "POST", headers: { "content-type": "application/json", "x-admin-key": KEY }, body: JSON.stringify(body) });
   let j = {};
   try { j = await r.json(); } catch (e) {}
   if (!r.ok) throw new Error(j.error || ("Error " + r.status));
@@ -605,36 +515,20 @@ async function load() {
   pintarEstado(st);
   if (!st.connected) return;
   const d = await api({ action: "list" });
-  renderPosts(d.posts); renderComments(d.comments); renderMessages(d.messages); renderRules(d.rules || []);
+  renderPosts(d.posts); renderRules(d.rules || []);
 }
 
-const ICO_SC = {
-  comentarios: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>',
-  mensajes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>',
-  ambos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M19 9h2v8l-3-2h-5"/></svg>',
-  directos: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M7.8 16.2a6 6 0 0 1 0-8.4"/><path d="M19 5a10 10 0 0 1 0 14"/><path d="M5 19a10 10 0 0 1 0-14"/></svg>',
-  historias: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg>',
-  menciones_historia: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>',
-};
-const ETQ_SC = { comentarios: "Comentarios", mensajes: "Mensaje privado", ambos: "Mensajes y comentarios", directos: "Directo", historias: "Respuesta a historia", menciones_historia: "Mención en historia" };
-const ICO_COPIAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
-const ICO_BORRAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/></svg>';
-let ultimasReglas = [];
 function renderRules(list) {
-  ultimasReglas = list;
   $("ig-reglas").innerHTML = list.length ? list.map((r) => `
-    <div class="regla">
-      <div class="regla-fila">
-        <div class="regla-ico">${ICO_SC[r.scope] || ICO_SC.ambos}</div>
-        <div class="regla-info"><div class="regla-t">${esc(r.keyword)}</div><div class="regla-s">${esc(ETQ_SC[r.scope] || r.scope)}</div></div>
-        <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
+    <div class="item"><div class="fila">
+      <div class="info">
+        <div class="titulo">${esc(r.keyword)}</div>
+        <div class="desc">${esc(r.reply)}</div>
+        <div class="chiquito">${esc(r.scope)}</div>
+        <div class="filas-btn" style="margin-top:8px"><button class="btn-accion btn-peligro mini" data-dr="${r.id}">Eliminar</button></div>
       </div>
-      <div class="regla-r">${esc(r.reply)}</div>
-      <div class="regla-pie">
-        <button class="ib" data-cp="${r.id}">${ICO_COPIAR} Duplicar</button>
-        <button class="ib" data-dr="${r.id}">${ICO_BORRAR} Eliminar</button>
-      </div>
-    </div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas. Toca + para crear la primera.</p>';
+      <label class="sw"><input type="checkbox" data-tg="${r.id}" ${r.active ? "checked" : ""}><span></span></label>
+    </div></div>`).join("") : '<p class="chiquito" style="margin-bottom:12px">Todavía no hay respuestas automáticas.</p>';
 }
 let verPublicadas = false, ultimosPosts = [];
 function renderPosts(all) {
@@ -677,58 +571,6 @@ function renderPosts(all) {
     </div>`;
   }).join("") : '<p class="chiquito">No hay publicaciones pendientes.</p>') + (publicadas.length ? `<button class="btn-accion btn-sec mini" data-vp="1">${verPublicadas ? "Ocultar publicadas" : "Ver publicadas (" + publicadas.length + ")"}</button>` : "");
 }
-function renderComments(list) {
-  $("ig-comentarios").innerHTML = list.length ? list.map((c) => `
-    <div class="item">
-      <div class="titulo">@${esc(c.username || "usuario")} <span class="chiquito">${esc(fmt(c.created_at))}</span></div>
-      <div class="desc" style="font-size:.92rem;opacity:1">${esc(c.text)}</div>
-      ${c.replied ? `<div class="burbuja b-out">${esc(c.reply_text)}</div>` : `
-        <textarea class="ig-ta" id="rc-${esc(c.ig_comment_id)}" placeholder="Tu respuesta…" style="margin-top:8px"></textarea>
-        <div class="filas-btn"><button class="btn-accion mini" data-rc="${esc(c.ig_comment_id)}">Responder</button></div>`}
-    </div>`).join("") : '<p class="chiquito">Aún no hay comentarios.</p>';
-}
-function renderMessages(list) {
-  const by = {};
-  list.slice().reverse().forEach((m) => { (by[m.sender_id] = by[m.sender_id] || []).push(m); });
-  const ids = Object.keys(by);
-  $("ig-mensajes").innerHTML = ids.length ? ids.map((id) => `
-    <div class="item">
-      <div class="chiquito">Conversación con ${esc(id)}</div>
-      ${by[id].map((m) => `<div class="burbuja ${m.direction === "out" ? "b-out" : "b-in"}">${esc(m.text)}</div>`).join("")}
-      <textarea class="ig-ta" id="rm-${esc(id)}" placeholder="Tu respuesta…" style="margin-top:8px"></textarea>
-      <div class="filas-btn"><button class="btn-accion mini" data-rm="${esc(id)}">Enviar</button></div>
-    </div>`).join("") : '<p class="chiquito">Aún no hay mensajes.</p>';
-}
-function renderStats(d) {
-  const p = d.profile || {};
-  const media = (d.media || []).map((m) => {
-    const i = m.insights || {};
-    const score = i.reach != null ? i.reach : (m.like_count || 0) + (m.comments_count || 0);
-    return { ...m, score };
-  });
-  const best = media.length ? media.reduce((a, b) => (b.score > a.score ? b : a)) : null;
-  let html = `<div class="grid3">
-    <div class="dato"><b>${esc(p.followers_count ?? "–")}</b><span>Seguidores</span></div>
-    <div class="dato"><b>${esc(p.follows_count ?? "–")}</b><span>Siguiendo</span></div>
-    <div class="dato"><b>${esc(p.media_count ?? "–")}</b><span>Publicaciones</span></div>
-  </div>
-  <div class="item"><b>${esc(d.reach7 ?? "–")}</b> <span class="chiquito">cuentas alcanzadas en los últimos 7 días</span>${d.reach_error ? `<div class="chiquito" style="color:#b5564a">${esc(d.reach_error)}</div>` : ""}</div>`;
-  html += media.length ? media.map((m) => {
-    const i = m.insights || {};
-    const img = m.thumbnail_url || (m.media_type === "IMAGE" || m.media_type === "CAROUSEL_ALBUM" ? m.media_url : "");
-    return `<div class="item"><div class="fila" style="align-items:flex-start">
-      ${img ? `<img class="miniatura" src="${esc(img)}" alt="">` : `<div class="vid">Video</div>`}
-      <div class="info">
-        ${best && m.id === best.id && m.score > 0 ? '<span class="etiqueta e-top">Mejor</span> ' : ""}
-        <span class="chiquito">${esc(fmt(m.timestamp))}</span>
-        <div class="desc">${esc((m.caption || "").slice(0, 80))}</div>
-        <div class="chiquito">Me gusta ${esc(m.like_count ?? 0)} · Comentarios ${esc(m.comments_count ?? 0)}${i.reach != null ? " · Alcance " + esc(i.reach) : ""}${i.views != null ? " · Vistas " + esc(i.views) : ""}${i.saved != null ? " · Guardados " + esc(i.saved) : ""}${i.shares != null ? " · Compartidos " + esc(i.shares) : ""}</div>
-        ${m.permalink ? `<a class="chiquito" href="${esc(m.permalink)}" target="_blank" rel="noopener">Ver en Instagram</a>` : ""}
-      </div></div></div>`;
-  }).join("") : '<p class="chiquito">No se encontraron publicaciones.</p>';
-  $("ig-stats").innerHTML = html;
-}
-
 async function toJpeg(file) {
   const bmp = await createImageBitmap(file);
   const c = document.createElement("canvas"); c.width = bmp.width; c.height = bmp.height;
@@ -755,7 +597,6 @@ $("ig-entrar").onclick = async () => {
     await load();
     if ($("ig-recordar").checked) { try { localStorage.setItem("michihub_ig_key", KEY); localStorage.setItem("michihub_ig_dueno", correoActual()); } catch (e) {} }
     $("ig-login").classList.add("oculto"); $("ig-app").classList.remove("oculto");
-    iniciarAutoPoll();
     if (pendiente) { say("ig-con-msg", pendiente.ok ? "Instagram conectado." : "No se pudo conectar: " + (pendiente.msg || "intenta de nuevo."), pendiente.ok ? "ok" : "err"); pendiente = null; }
   } catch (e) { say("ig-login-msg", e.message === "no autorizado" ? "Clave incorrecta." : e.message, "err"); }
 };
@@ -763,7 +604,20 @@ const salir = () => { try { localStorage.removeItem("michihub_ig_key"); localSto
 $("ig-salir").onclick = salir; $("ig-salir2").onclick = salir;
 async function conectar() {
   say("ig-con-msg", "Abriendo Instagram…");
-  try { const r = await api({ action: "oauth_url" }); location.href = r.url; } catch (e) { say("ig-con-msg", e.message, "err"); }
+  try {
+    const r = await api({ action: "oauth_url" });
+    const u = new URL(r.url);
+    const el = $("ig-con-msg");
+    el.className = "ig-msg"; el.innerHTML = "";
+    const t = document.createElement("div");
+    t.style.cssText = "word-break:break-all;font-size:.8rem;margin-bottom:8px;line-height:1.4";
+    t.textContent = "client_id: " + u.searchParams.get("client_id") + "\nredirect_uri: " + u.searchParams.get("redirect_uri");
+    t.style.whiteSpace = "pre-wrap";
+    const bt = document.createElement("button");
+    bt.className = "btn-accion"; bt.textContent = "Continuar a Instagram"; bt.style.cssText = "width:100%;padding:11px;font-weight:bold";
+    bt.onclick = () => { location.href = r.url; };
+    el.appendChild(t); el.appendChild(bt);
+  } catch (e) { say("ig-con-msg", e.message, "err"); }
 }
 $("ig-conectar").onclick = conectar;
 $("ig-reconectar").onclick = conectar;
@@ -773,9 +627,9 @@ $("ig-desconectar").onclick = async () => {
 };
 document.querySelectorAll("#ig-tabs button").forEach((b) => b.onclick = () => {
   document.querySelectorAll("#ig-tabs button").forEach((x) => x.classList.toggle("activo", x === b));
-  ["auto", "prog"].forEach((t) => $("t-" + t).classList.toggle("oculto", t !== b.dataset.t));
+  ["auto", "prog", "ver"].forEach((t) => $("t-" + t).classList.toggle("oculto", t !== b.dataset.t));
 });
-["reload1", "reload2", "reload3"].forEach((id) => $(id).onclick = () => load().catch((e) => alert(e.message)));
+$("reload1").onclick = () => load().catch((e) => alert(e.message));
 $("runNow").onclick = async () => { try { await api({ action: "publish_due" }); say("pMsg", "Revisando publicaciones vencidas. Toca Actualizar en unos segundos.", "ok"); } catch (e) { alert(e.message); } };
 $("mfile").onchange = () => {
   const fs = [...$("mfile").files];
@@ -797,57 +651,14 @@ $("addPost").onclick = async () => {
   } catch (e) { say("pMsg", e.message, "err"); }
   btn.disabled = false;
 };
-let scopeSel = "ambos";
-function marcarScope() { document.querySelectorAll("#ov-scopes .opc").forEach((b) => b.classList.toggle("activo", b.dataset.sc === scopeSel)); }
-function prevRegla() { const t = $("rr").value.trim(); $("ov-prev").textContent = t ? t.split("{usuario}").join("@ana.garcia") : "Aquí verás cómo le llega la respuesta."; }
-function abrirRegla() { scopeSel = "ambos"; $("rk").value = ""; $("rr").value = ""; say("rMsg", ""); marcarScope(); prevRegla(); $("regla-ov").classList.remove("oculto"); document.body.style.overflow = "hidden"; }
-function cerrarRegla() { $("regla-ov").classList.add("oculto"); document.body.style.overflow = ""; }
-async function guardarRegla() {
-  let k = $("rk").value.trim(); const r = $("rr").value.trim();
-  if (!k && scopeSel === "menciones_historia") k = "*";
+$("addRule").onclick = async () => {
+  const k = $("rk").value.trim(), r = $("rr").value.trim();
   if (!k || !r) return say("rMsg", "Escribe la palabra y la respuesta.", "err");
   try {
-    await api({ action: "add_rule", keyword: k, reply: r, scope: scopeSel });
-    cerrarRegla(); await load();
+    await api({ action: "add_rule", keyword: k, reply: r, scope: $("rs").value });
+    say("rMsg", "Respuesta agregada.", "ok"); $("rk").value = ""; $("rr").value = ""; await load();
   } catch (e) { say("rMsg", e.message, "err"); }
-}
-const EJEMPLOS = [
-  { n: "Saludo", sc: "mensajes", k: "hola, buenas, buenos dias, buenas tardes, buenas noches", r: "¡Hola {usuario}! 🐾 Bienvenido a MichiHub. ¿En qué te ayudo?" },
-  { n: "Gracias", sc: "comentarios", k: "gracias", r: "¡Gracias a ti {usuario}! 🐾💛" },
-  { n: "Precio", sc: "ambos", k: "precio, costo, cuanto cuesta", r: "¡Hola {usuario}! MichiHub es gratis 🐾 Entra aquí: https://eofjsdev.github.io/Michihub/" },
-  { n: "Información", sc: "mensajes", k: "info, informacion, que es michihub", r: "MichiHub es una app con radio lo-fi, chat, juegos y más 🐾 https://eofjsdev.github.io/Michihub/" },
-  { n: "Descargar app", sc: "ambos", k: "descargar, descarga, instalar", r: "¡Claro {usuario}! Abre https://eofjsdev.github.io/Michihub/ y toca «Agregar a pantalla de inicio» 📲" },
-  { n: "Radio", sc: "ambos", k: "radio, musica, lofi", r: "🎧 La radio lo-fi de MichiHub suena todo el día: https://eofjsdev.github.io/Michihub/" },
-  { n: "Ayuda", sc: "mensajes", k: "ayuda, soporte, problema", r: "¡Hola {usuario}! Cuéntame qué pasó y te ayudamos lo antes posible 🐾" },
-  { n: "Enlace", sc: "comentarios", k: "link, enlace, donde", r: "Aquí está el enlace {usuario}: https://eofjsdev.github.io/Michihub/ 🐾" },
-  { n: "Historia", sc: "historias", k: "*", r: "¡Gracias por responder a mi historia {usuario}! 🐾" },
-  { n: "Directo", sc: "directos", k: "hola, saludos", r: "¡Hola {usuario}! Gracias por acompañarme en el directo 🐾" },
-  { n: "Mención", sc: "menciones_historia", k: "*", r: "¡Gracias por mencionarme {usuario}! 💛" },
-  { n: "Verificar cuenta", sc: "comentarios", k: "verificar, verificacion, insignia", r: "Para verificar tu cuenta entra a MichiHub, abre Insta, genera tu código y mándame «verificar» por mensaje privado ✅" },
-];
-$("ov-ejemplos").innerHTML = EJEMPLOS.map((e, i) => `<button class="chip" type="button" data-ej="${i}">${esc(e.n)}</button>`).join("");
-$("ov-ejemplos").onclick = (ev) => {
-  const b = ev.target.closest("[data-ej]"); if (!b) return;
-  const e = EJEMPLOS[Number(b.dataset.ej)];
-  scopeSel = e.sc; marcarScope(); $("rk").value = e.k; $("rr").value = e.r; prevRegla();
 };
-$("fab-regla").onclick = abrirRegla;
-$("ov-cerrar").onclick = cerrarRegla;
-$("ov-guardar").onclick = guardarRegla;
-$("ov-guardar2").onclick = guardarRegla;
-$("ov-scopes").onclick = (ev) => { const b = ev.target.closest(".opc"); if (!b) return; scopeSel = b.dataset.sc; marcarScope(); };
-$("rr").oninput = prevRegla;
-$("ov-usuario").onclick = () => { const ta = $("rr"); const i = ta.selectionStart == null ? ta.value.length : ta.selectionStart; ta.value = ta.value.slice(0, i) + "{usuario}" + ta.value.slice(i); ta.focus(); prevRegla(); };
-// Revisión automática: mientras el panel esté abierto, revisa mensajes y comentarios cada minuto
-let autoPollTimer = null;
-function iniciarAutoPoll() {
-  if (autoPollTimer) return;
-  say("ig-poll-msg", "Revisión automática activa: cada minuto mientras esta pantalla esté abierta.", "ok");
-  autoPollTimer = setInterval(async () => {
-    if (document.hidden) return;
-    try { await api({ action: "poll" }); } catch (e) {}
-  }, 60000);
-}
 $("ig-poll").onclick = async () => {
   say("ig-poll-msg", "Revisando…");
   try {
@@ -857,10 +668,6 @@ $("ig-poll").onclick = async () => {
     else say("ig-poll-msg", base + " Si hay una regla que coincide, ya se respondió.", "ok");
     await load();
   } catch (e) { say("ig-poll-msg", e.message, "err"); }
-};
-$("loadStats").onclick = async () => {
-  say("sMsg", "Cargando…");
-  try { renderStats(await api({ action: "stats" })); say("sMsg", ""); } catch (e) { say("sMsg", e.message, "err"); }
 };
 document.body.addEventListener("change", async (ev) => {
   const t = ev.target;
@@ -882,10 +689,7 @@ document.body.addEventListener("click", async (ev) => {
     }
     if (t.dataset.rt) { await api({ action: "update_post", id: Number(t.dataset.rt), reset: true }); await load(); }
     if (t.dataset.dr) { if (confirm("¿Eliminar esta respuesta automática?")) { await api({ action: "delete_rule", id: Number(t.dataset.dr) }); await load(); } }
-    if (t.dataset.cp) { const r = ultimasReglas.find((x) => String(x.id) === t.dataset.cp); if (r) { await api({ action: "add_rule", keyword: r.keyword, reply: r.reply, scope: r.scope }); await load(); } }
     if (t.dataset.del) { if (confirm("¿Eliminar esta publicación?")) { await api({ action: "delete_post", id: Number(t.dataset.del) }); await load(); } }
-    if (t.dataset.rc) { const txt = $("rc-" + t.dataset.rc).value.trim(); if (txt) { await api({ action: "reply_comment", comment_id: t.dataset.rc, text: txt }); await load(); } }
-    if (t.dataset.rm) { const txt = $("rm-" + t.dataset.rm).value.trim(); if (txt) { await api({ action: "send_message", recipient_id: t.dataset.rm, text: txt }); await load(); } }
   } catch (e) { alert(e.message); }
 });
 
@@ -937,29 +741,6 @@ document.body.addEventListener("click", async (ev) => {
       await rpc("ig_admin_resolver", { p_id: id, p_estado: b.dataset.vok ? "verificada" : "rechazada", p_clave: clave() });
       pend = pend.filter((p) => String(p.id) !== String(id)); pintarVer();
       say("ver-msg", b.dataset.vok ? "Cuenta verificada." : "Solicitud rechazada.", "ok");
-    } catch (e) { say("ver-msg", e.message, "err"); }
-  };
-
-  let verif = [];
-  function pintarVerif() {
-    $("ver-lista-v").innerHTML = verif.length ? verif.map((p) => `<div class="item">
-      <div class="titulo">@${esc(p.usuario_ig)}</div>
-      <div class="chiquito">${esc(p.correo)}${p.resuelto_en ? " · " + esc(fmt(p.resuelto_en)) : ""}</div>
-      <div class="desc" style="font-weight:bold;letter-spacing:1px">${esc(p.codigo)}</div>
-      <div class="chiquito"><a href="https://www.instagram.com/${esc(p.usuario_ig)}/" target="_blank" rel="noopener">Ver perfil y revisar que el código siga en su bio</a></div>
-      <div class="filas-btn" style="margin-top:8px"><button class="btn-accion btn-peligro mini" data-vq="${esc(p.id)}">Quitar verificación</button></div></div>`).join("") : '<p class="chiquito">No hay cuentas verificadas.</p>';
-  }
-  $("ver-cargar-v").onclick = async () => {
-    try { say("ver-msg", "Cargando...", ""); verif = await rpc("ig_admin_verificadas", { p_clave: clave() }); say("ver-msg", "", ""); pintarVerif(); }
-    catch (e) { say("ver-msg", e.message, "err"); }
-  };
-  $("ver-lista-v").onclick = async (ev) => {
-    const b = ev.target.closest("button"); if (!b || !b.dataset.vq) return;
-    if (!confirm("¿Quitar la verificación de esta cuenta?")) return;
-    try {
-      await rpc("ig_admin_resolver", { p_id: b.dataset.vq, p_estado: "rechazada", p_clave: clave() });
-      verif = verif.filter((p) => String(p.id) !== String(b.dataset.vq)); pintarVerif();
-      say("ver-msg", "Verificación retirada.", "ok");
     } catch (e) { say("ver-msg", e.message, "err"); }
   };
 })();
@@ -1087,7 +868,7 @@ configurarPWA();
     if (est && est.estado === "verificada") {
       try { localStorage.setItem("michihubIgVerificado", est.usuario_ig); } catch (e) {}
       bloquear(false);
-      pintar('<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p><p style="text-align:center;margin-top:6px"><b>@' + esc(est.usuario_ig) + '</b></p><p style="font-size:.85rem;text-align:center;margin-top:12px;opacity:.85">Mantén este código en tu bio de Instagram: <b>' + esc(est.codigo) + '</b><br>Si lo quitas, podemos retirar tu verificación.</p>');
+      pintar('<p style="font-size:1.1rem;text-align:center">✅ Cuenta verificada</p><p style="text-align:center;margin-top:6px"><b>@' + esc(est.usuario_ig) + '</b></p>');
       return;
     }
     try { localStorage.removeItem("michihubIgVerificado"); } catch (e) {}
@@ -1095,20 +876,30 @@ configurarPWA();
     if (est && est.estado === "pendiente") {
       pintar('<p>Verificación de <b>@' + esc(est.usuario_ig) + '</b> en revisión.</p>' +
         '<div style="' + caja + '">' + esc(est.codigo) + '</div>' +
-        '<p style="font-size:.9rem;line-height:1.5">Pon este código en tu <b>bio de Instagram</b> y espera. Cuando se apruebe, aquí aparecerá tu ✅. <b>Mantén el código en tu bio</b>: si lo quitas, podemos retirar tu verificación.</p>' +
-        '<p style="font-size:.85rem;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(176,158,141,.18)">⏳ Tu código está siendo verificado por los moderadores de MichiHub. Puede tardar de <b>24 horas</b> hasta <b>5 días hábiles</b>. Deja el código en tu bio, antes y después de que se apruebe.</p>' +
+        '<ol style="font-size:.9rem;line-height:1.6;padding-left:20px;margin-top:6px">' +
+        '<li>Copia tu código y pégalo en tu <b>biografía de Instagram</b>.</li>' +
+        '<li>Envía el mismo código por <b>mensaje directo</b> a <b>@eofjs.dev</b>, desde la cuenta que quieres verificar.</li>' +
+        '<li>Espera la revisión. Cuando se apruebe, aquí aparecerá tu ✅ y ya podrás quitar el código de tu bio.</li></ol>' +
+        '<button class="btn-accion" id="vig-copiar" style="width:100%;padding:12px;font-weight:bold;margin-top:10px">Copiar código</button>' +
+        '<a class="btn-accion" id="vig-abrir" href="https://ig.me/m/eofjs.dev" target="_blank" rel="noopener" style="display:block;box-sizing:border-box;text-align:center;text-decoration:none;width:100%;padding:12px;font-weight:bold;margin-top:8px">Abrir Instagram y enviar el código</a>' +
+        '<p style="font-size:.85rem;line-height:1.5;margin-top:10px;padding:10px 12px;border-radius:10px;background:rgba(176,158,141,.18)">⏳ Tu código está siendo verificado por los moderadores de MichiHub. Puede tardar de <b>24 horas</b> hasta <b>5 días hábiles</b>. Deja el código en tu bio hasta que se apruebe.</p>' +
         '<button class="btn-accion" id="vig-revisar" style="width:100%;padding:12px;font-weight:bold;margin-top:10px">Revisar estado</button>' +
         '<button class="btn-accion btn-sec" id="vig-cambiar" style="width:100%;padding:10px;margin-top:8px">Usar otra cuenta</button>' +
         '<div class="ig-msg" id="vig-msg" style="margin-top:8px"></div>');
       document.getElementById("vig-revisar").onclick = () => cargar(true);
+      document.getElementById("vig-copiar").onclick = async () => {
+        const b = document.getElementById("vig-copiar");
+        try { await navigator.clipboard.writeText(est.codigo); b.textContent = "Código copiado ✓"; }
+        catch (e) { window.prompt("Copia tu código:", est.codigo); }
+      };
       document.getElementById("vig-cambiar").onclick = () => formulario();
       return;
     }
-    formulario(est && est.estado === "rechazada" ? "Tu verificación fue rechazada o retirada (el código debe permanecer en tu bio). Puedes intentarlo de nuevo." : "");
+    formulario(est && est.estado === "rechazada" ? "Tu solicitud anterior fue rechazada. Puedes intentarlo de nuevo." : "");
   }
 
   function formulario(aviso) {
-    pintar('<p style="font-size:.9rem;line-height:1.5">Verifica que tu cuenta de Instagram es tuya. No pedimos documentos: solo un código. Tu código será verificado por los moderadores de MichiHub y puede tardar de 24 horas hasta 5 días hábiles.</p>' +
+    pintar('<p style="font-size:.9rem;line-height:1.5">Verifica que tu cuenta de Instagram es tuya. No pedimos documentos: solo un código. Lo pegas en tu biografía de Instagram y nos lo envías por mensaje directo a <b>@eofjs.dev</b>. Los moderadores de MichiHub lo revisan y puede tardar de 24 horas hasta 5 días hábiles.</p>' +
       (aviso ? '<p style="margin-top:8px;color:#b5564a">' + esc(aviso) + '</p>' : "") +
       '<input class="ig-in" id="vig-usuario" placeholder="@tu_usuario" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" maxlength="31" style="margin-top:12px">' +
       '<div class="ig-msg" id="vig-msg"></div>' +
